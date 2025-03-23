@@ -247,6 +247,396 @@
             "responses": [
                 "I was made in 2024, if that's what you are asking!"
             ]
-        }
+        },
+    
+        {
+            "tag": "request_help",
+            "patterns": [
+                "Help me",
+                "I need help",
+                "Can you help me?",
+                "I need assistance",
+                "How can I solve this problem?"
+            ],
+            "responses": [
+                "Of course! How can I assist you?",
+                "I'm here to help, let me know what you need!"
+            ]
+        },
+        {
+            "tag": "translation",
+            "patterns": [
+                "How do I say 'Hello' in English?",
+                "Translate this word into French",
+                "What does 'Bonjour' mean in Arabic?"
+            ],
+            "responses": [
+                "The translation of {word} into {language} is {translation}."
+            ]
+        },
+        {
+            "tag": "health_fitness",
+            "patterns": [
+                "How can I lose weight?",
+                "What are the best exercises for burning fat?",
+                "How do I build muscle?"
+            ],
+            "responses": [
+                "To lose weight, you need to do aerobic exercises like running and follow a balanced diet."
+            ]
+        },
+        {
+            "tag": "food_recipes",
+            "patterns": [
+                "How do I cook pizza?",
+                "Give me a cake recipe",
+                "What are the ingredients for pasta?"
+            ],
+            "responses": [
+                "To make pizza, you'll need dough, sauce, cheese, and your favorite toppings!"
+            ]
+        },
+        {
+            "tag": "travel_tourism",
+            "patterns": [
+                "How do I travel to Italy?",
+                "What are the best tourist attractions in Paris?",
+                "Where should I go in Dubai?"
+            ],
+            "responses": [
+                "You can visit the Eiffel Tower, the Louvre Museum, and the Arc de Triomphe in Paris!"
+            ]
+        },
+        {
+            "tag": "programming_tech",
+            "patterns": [
+                "How do I learn Python?",
+                "What is the best programming language?",
+                "How do I write code to find prime numbers?"
+            ],
+            "responses": [
+                "To learn Python, you can start with online courses like Codecademy or Coursera."
+            ]
+        },
+        {
+            "tag": "tech_support",
+            "patterns": [
+                "My laptop is not working, what should I do?",
+                "My phone is not charging",
+                "How do I fix my Wi-Fi?"
+            ],
+            "responses": [
+                "Try restarting the device. If the issue persists, check the network settings or battery."
+            ]
+        },
+        {
+            "tag": "emergency_help",
+            "patterns": [
+                "What should I do in an earthquake?",
+                "What is the emergency number?",
+                "How should I act in case of fire?"
+            ],
+            "responses": [
+                "During an earthquake, stay away from windows and take cover under a sturdy table to protect yourself."
+            ]
+        },
+        {
+            "tag": "alarm",
+            "patterns": [
+                "Set an alarm for {time}.", 
+            "Wake me up at {time}.",
+             "Schedule an alarm.", "I need an alarm at {time}."
+            ],
+            "responses": [
+                "Alarm set for {time}.", 
+                "Okay, I’ll wake you up at {time}."
+            ]
+          },
+          {
+            "tag": "calendar",
+            "patterns": [
+                "What's on my schedule today?",
+             "Show me my calendar.",
+              "Do I have any meetings today?", 
+              "What’s next on my agenda?"
+            ],
+            "responses": [
+                "Here’s your schedule for today: {schedule}.", 
+                "You have {event_count} events today."
+            ]
+          },
+          {
+            "tag": "math_solver",
+            "patterns": [
+                "What is {math_problem}?", 
+            "Solve {math_problem}.", 
+            "Can you calculate {math_problem}?", 
+            "Do this math: {math_problem}."
+        ],
+            "responses": [
+                "The answer is {result}.", 
+                "Calculation result: {result}."
+            ]
+          },
+          {
+            "tag": "storytelling",
+            "patterns": [
+                "Tell me a story.", 
+                "I want to hear a bedtime story.", 
+                "Can you narrate a short story?", 
+                "Give me a fun story."
+            ],
+            "responses": [
+                "Once upon a time...",
+                 "Here’s a story for you: {story}."
+            ]
+          },
+          {
+            "tag": "sleep_mode",
+            "patterns": [
+                "Put the glasses to sleep.", 
+                "Enter sleep mode.", 
+                "Turn on low-power mode.",
+                 "Save battery."
+            ],
+            "responses": [
+                "Entering sleep mode.",
+                 "Activating low-power mode."
+            ]
+          },
+          {
+            "tag": "shopping_list",
+            "patterns": [
+                "Add {item} to my shopping list.", 
+                "Remove {item} from my shopping list.", 
+                "Show my shopping list.",
+                 "What do I need to buy?"
+                ],
+            "responses": [
+                "{item} added to your shopping list.",
+                 "{item} removed from your shopping list.",
+                  "Here’s your shopping list: {list}."
+            ]
+          },
+          {
+            "tag": "internet_search",
+            "patterns": [
+                "Search for {query}.",
+                 "Find information about {query}.", 
+                 "Look up {query} on the internet.", 
+                 "Google {query}."
+                ],
+            "responses": [
+                "Searching the web for {query}...",
+                 "Here’s what I found on {query}."
+            ]
+          },
+          {
+            "tag": "device_temperature",
+            "patterns": [
+                "Check device temperature.", 
+                "Is my device overheating?",
+                 "Show me the system temperature."
+                ],
+            "responses": [
+                "Your device temperature is {temperature}°C.", 
+                "System temperature: {temperature}°C."
+            ]
+          },
+          {
+            "tag": "exercise_tips",
+            "patterns": [
+                "Give me some exercise tips.",
+                 "How can I stay fit?",
+                  "Suggest a quick workout.", 
+                  "Best exercises for staying healthy?"
+                ],
+            "responses": [
+                "Try doing 10 push-ups and 10 squats!", 
+                "A 30-minute walk every day can improve your health.", 
+                "Drink water and stretch regularly!"
+            ]
+          },
+          {
+            "tag": "time",
+            "patterns": [
+                "What time is it?", 
+                "Tell me the time.", 
+                "Current time?", 
+                "What's the clock showing now?"
+            ],
+            "responses": [
+                "The time is {time}.", 
+                "It's currently {time}.",
+                 "Right now, it's {time}."
+                ]
+          },
+          {
+            "tag": "weather",
+            "patterns": [
+                "What's the weather like?", 
+                "Is it raining?", 
+                "Current temperature?", 
+                "Tell me today's forecast."
+            ],
+            "responses": [
+                "The temperature is {temperature}°C.", 
+                "Today's forecast: {forecast}.", 
+                "It feels like {feels_like}°C outside."
+            ]
+          },
+          {
+            "tag": "color_recognition",
+            "patterns": [
+                "What color is this?", 
+                "Identify this color.", 
+                "Tell me the name of this color.",
+                 "Detect the color in front of me."
+                ],
+            "responses": [
+                "This color looks like {color}.", 
+                "It appears to be {color}.", 
+                "I recognize this as {color}."
+            ]
+          },
+          {
+            "tag": "face_recognition",
+            "patterns": [
+                "Who is this person?", 
+                "Recognize this face.",
+                 "Identify the person in front of me.", 
+                 "Do you know who this is?"
+                ],
+            "responses": [
+                "This might be {person_name}.",
+                 "I can't recognize this person.",
+                  "It seems like {person_name}."
+                ]
+          },
+          {
+            "tag": "text_reading",
+            "patterns": [
+                "Read this text.",
+                 "What does this say?",
+                  "Can you read this sign?", 
+                  "Extract text from this image."
+                ],
+            "responses": [
+                "The text says: {extracted_text}.", 
+                "Here is the extracted text: {extracted_text}."
+            ]
+          },
+          {
+            "tag": "open_app",
+            "patterns": [
+                "Open the camera.",
+                 "Start playing music.", 
+                 "Launch settings.", 
+                 "Open my messages."
+                ],
+            "responses": [
+                "Opening the requested app.", 
+                "Launching application.", 
+                "Accessing {app_name}."
+            ]
+          },
+          {
+            "tag": "shutdown",
+            "patterns": [
+                "Turn off the device.", 
+                "Restart the glasses.",
+                 "Shut down now.", 
+                 "Power off the system."
+                ],
+            "responses": [
+                "Are you sure you want to shut down?", 
+                "Restarting the system.",
+                 "Powering off now."
+                ]
+          },
+          {
+            "tag": "news",
+            "patterns": [
+                "What's the latest news?", 
+                "Tell me the headlines.",
+                 "Any news updates?",
+                  "Show me current events."
+                ],
+            "responses": [
+                "Here are the latest news headlines: {news}.", 
+                "Checking the news for you.", 
+                "These are the top stories right now."
+            ]
+          },
+          {
+            "tag": "battery_status",
+            "patterns": [
+                "How much battery is left?",
+                 "Check battery status.", 
+                 "Is my battery low?",
+                  "Show me the battery percentage."
+                ],
+            "responses": [
+                "Your battery is at {battery_level}%.",
+                 "Battery status: {battery_level}%.",
+                  "You have {battery_level}% battery remaining."
+                ]
+          },
+          {
+            "tag": "volume_control",
+            "patterns": [
+                "Turn up the volume.", 
+                "Lower the sound.",
+                 "Mute the device.",
+                  "Increase audio level."
+                ],
+            "responses": [
+                "Increasing volume.",
+                 "Lowering the sound.",
+                  "Muting audio.", 
+                  "Adjusting the volume."
+                ]
+          },
+          {
+            "tag": "call_someone",
+            "patterns": [
+                "Call {contact}.", 
+                "Make a call to {contact}.", 
+                "Dial {contact}."
+            ],
+            "responses": [
+                "Calling {contact} now.",
+                 "Dialing {contact}...", 
+                 "Connecting you to {contact}."
+                ]
+          },
+          {
+            "tag": "music_control",
+            "patterns": [
+                "Play some music.",
+                 "Pause the song.",
+                  "Next track.", 
+                  "Previous song."
+                ],
+            "responses": [
+                "Playing music.",
+                 "Pausing track.",
+                  "Skipping to the next song.",
+                   "Going back to the previous track."
+                ]
+          },
+          {
+            "tag": "reminder",
+            "patterns": [
+                "Set a reminder for {time}.", 
+                "Remind me to buy groceries.",
+                 "Schedule a reminder."
+                ],
+            "responses": [
+                "Reminder set for {time}.", 
+                "I'll remind you about {task} at {time}."
+            ]
+          }
     ]
 }
+    
