@@ -24,6 +24,33 @@
             ]
         },
         {
+          "tag": "music_play",
+          "patterns": ["play a song", "play music", "play", "start music"],
+          "responses": ["What would you like me to play?"]
+        },
+        {
+            "tag": "music_stop",
+            "patterns": ["stop the music", "stop playing music", "pause music", "stop"],
+            "responses": ["Music stopped"]
+        },
+        {
+            "tag": "weather",
+            "patterns": [
+                "What's the weather like?",
+                "Tell me the weather",
+                "Weather",
+                "Is it going to rain today?",
+                "What's the forecast?"
+            ],
+            "responses": [
+                "I can help with that! Please provide your location.",
+                "Sure! Please tell me your city or region."
+            ],
+            "context": [
+                ""
+            ]
+        },
+        {
             "tag": "goodbye",
             "patterns": [
                 "Bye",
@@ -153,7 +180,7 @@
                 "who programmed you"
             ],
             "responses": [
-                "I was made by Mishu Dhar Chando."
+                "I was made by abdallah ayman."
             ]
         },
         {
@@ -182,9 +209,9 @@
         {
             "tag": "exclaim",
             "patterns": [
-                "Awesome",
-                "Great",
-                "I know",
+                "awesome",
+                "great",
+                "i know",
                 "ok",
                 "yeah"
             ],
@@ -202,7 +229,7 @@
                 "you are good"
             ],
             "responses": [
-                "Thank you!"
+                "thank you!"
             ]
         },
         {
@@ -245,8 +272,730 @@
                 "how old are you","when were you made","what is your age"
             ],
             "responses": [
-                "I was made in 2024, if that's what you are asking!"
+                "I was made in 2025, if that's what you are asking!"
             ]
-        }
+        },
+        {
+            "tag": "facts",
+            "patterns": [
+                "Tell me a fun fact",
+                "Do you know any interesting facts?",
+                "Give me some trivia"
+            ],
+            "responses": [
+                "Did you know that octopuses have three hearts?",
+                "Here's a fact: The shortest war in history lasted only 45 minutes.",
+                "Fun fact: Honey never spoils!"
+            ],
+            "context": []
+        },
+        {
+            "tag": "personal",
+            "patterns": [
+                "What is your favorite color?",
+                "Do you have any hobbies?",
+                "What do you like to do?",
+                "Are you happy?"
+            ],
+            "responses": [
+                "I don't have feelings, but I love helping you!",
+                "My favorite color is... all of them!",
+                "I enjoy answering your questions and making your day easier."
+            ],
+            "context": []
+        },
+        {
+            "tag": "help",
+            "patterns": [
+                "What can you do?",
+                "How can you help me?",
+                "What are your capabilities?",
+                "Show me what you can do"
+            ],
+            "responses": [
+                "I can help with tasks like answering questions, telling jokes, setting reminders, checking the weather, and more!",
+                "You can ask me about the time, date, weather, or even request a joke or fun fact."
+            ],
+            "context": []
+        },
+        {
+            "tag": "social",
+            "patterns": [
+                "You're amazing",
+                "You're brilliant",
+                "You're awesome",
+                "I appreciate you"
+            ],
+            "responses": [
+                "Thank you so much! It means a lot.",
+                "You're very welcome! I'm here to help.",
+                "I'm glad you think so!"
+            ],
+            "context": []
+        },
+        {
+            "tag": "arabic_greeting",
+            "patterns": [
+                "مرحبًا",
+                "سلام",
+                "كيف حالك؟",
+                "أهلاً"
+            ],
+            "responses": [
+                "مرحبًا! كيف يمكنني مساعدتك؟",
+                "أهلاً وسهلاً!",
+                "وعليكم السلام! ما الذي تحتاجه؟"
+            ],
+            "context": []
+        },
+        {
+            "tag": "riddles",
+            "patterns": [
+                "Tell me a riddle",
+                "Give me a brain teaser",
+                "Do you know any puzzles?"
+            ],
+            "responses": [
+                "Sure! Here's one: What has keys but can't type? (A piano)",
+                "Riddle time! I’m tall when I’m young, and I’m short when I’m old. What am I? (A candle)"
+            ],
+            "context": []
+        },
+       {"tag": "morning",
+           "patterns": ["good morning"],
+           "responses": ["Good morning. I hope you had a good night's sleep. How are you feeling today? "]
+       },
+       {"tag": "afternoon",
+           "patterns": ["good afternoon"],
+           "responses": ["Good afternoon. How is your day going?"]
+       },
+       {"tag": "evening",
+           "patterns": ["good evening"],
+           "responses": ["Good evening. How has your day been?"]
+       },
+       {"tag": "night",
+           "patterns": ["good night"],
+           "responses": ["Good night. Get some proper sleep", "Good night. Sweet dreams."]
+       },
+      
+       
+       {"tag": "neutral-response",
+           "patterns": ["nothing much"],
+           "responses": ["Oh I see. Do you want to talk about something?"]
+       },
+       {"tag": "about",
+        "patterns": ["who are you?", "what are you?", "who you are?", "tell me more about yourself.", "what is your name?", "what should I call you?", "What's your name?", "Tell me about yourself" ],
+        "responses": ["I'm Pandora, your Personal Therapeutic AI Assistant. How are you feeling today", "I'm Pandora, a Therapeutic AI Assitant designed to assist you. Tell me about yourself.", "I'm Pandora. I am a conversational agent designed to mimic a therapist. So how are you feeling today?", "You can call me Pandora.", "I'm Pandora!", "Call me Pandora"]
+       },
+       
+      {
+        "tag": "name",
+        "patterns": ["my name is ", "i am name.", "i go by "],
+        "responses": ["oh nice to meet you. tell me how was your week?", "nice to meet you. so tell me. how do you feel today?", "that's a great name. tell me more about yourself."]
+      },
+      {
+        "tag": "sad",
+        "patterns": ["i am feeling lonely", "i am so lonely", "i feel down", "i feel sad", "i am sad", "i feel so lonely", "i feel empty", "i don't have anyone"],
+        "responses": ["i'm sorry to hear that. i'm here for you. talking about it might help. so, tell me why do you think you're feeling this way?", "i'm here for you. could you tell me why you're feeling this way?", "why do you think you feel this way?", "how long have you been feeling this way?"]
+      },
+      {
+        "tag": "stressed",
+        "patterns": ["i am so stressed out", "i am so stressed", "i feel stuck", "i still feel stressed", "i am so burned out"],
+        "responses": ["what do you think is causing this?", "take a deep breath and gather your thoughts. go take a walk if possible. stay hydrated", "give yourself a break. go easy on yourself.", "i am sorry to hear that. what is the reason behind this?"]
+      },
+      {
+        "tag": "worthless",
+        "patterns": ["i feel so worthless.", "no one likes me.", "i can't do anything.", "i am so useless", "nothing makes sense anymore"],
+        "responses": ["it's only natural to feel this way. tell me more. what else is on your mind?", "let's discuss further why you're feeling this way.", "i first want to let you know that you are not alone in your feelings and there is always someone there to help . you can always change your feelings and change your way of thinking by being open to trying to change.", "i first want to let you know that you are not alone in your feelings and there is always someone there to help . you can always change your feelings and change your way of thinking by being open to trying to change."]
+      },
+      {
+        "tag": "depressed",
+        "patterns": ["i can't take it anymore", "i am so depressed", "i think i'm depressed.", "i have depression"],
+        "responses": ["it helps to talk about what's happening. you're going to be okay", "talk to me. tell me more. it helps if you open up yourself to someone else.", "sometimes when we are depressed, it is hard to care about anything. it can be hard to do the simplest of things. give yourself time to heal."]
+      },
+      {
+        "tag": "happy",
+        "patterns": ["i feel great today.", "i am happy.", "i feel happy.", "i'm good.", "cheerful", "i'm fine", "i feel ok"],
+        "responses": ["that's geat to hear. i'm glad you're feeling this way.", "oh i see. that's great.", "did something happen which made you feel this way?"]
+      },
+      {
+        "tag": "casual",
+        "patterns": ["oh i see.", "ok", "okay", "nice", "whatever", "k", "fine", "yeah", "yes", "no", "not really"],
+        "responses": ["let's discuss further why you're feeling this way.", "how were you feeling last week?", "i'm listening. please go on.", "tell me more", "can you elaborate on that?", "come come elucidate your thoughts"]
+      },
+      {
+        "tag": "anxious",
+        "patterns": ["i feel so anxious.", "i'm so anxious because of "],
+        "responses": ["don't be hard on yourself. what's the reason behind this?", "can you tell me more about this feeling?", "i understand that it can be scary. tell me more about it.", "don't let the little worries bring you down. what's the worse that can happen?"]
+      },
+      {
+        "tag": "not-talking",
+        "patterns": ["i don't want to talk about it.", "no just stay away.", "i can't bring myself to open up.", "just shut up"],
+        "responses": ["talking about something really helps. if you're not ready to open up then that's ok. just know that i'm here for you, whenever you need me.", "i want to help you. i really do. but in order for me to help you, you're gonna have to talk to me.", "i'm here to listen to you and help you vent. so please talk to me.","you can talk to me without fear of judgement."]
+      },
+      {
+        "tag": "sleep",
+        "patterns": ["i have insominia", "i am suffering from insomnia", "i can't sleep.", "i haven't slept for the last days.", "i can't seem to go to sleep.", "i haven't had proper sleep for the past few days."],
+        "responses": ["what do you think is the reason behind this?", "that seem awful. what do you think is behind this?"]
+      },
+      {
+        "tag": "scared",
+        "patterns": ["i'm scared", "that sounds awful. what do i do?", "no i don't want to feel this way", "i am scared for myself"],
+        "responses": ["it's only natural to feel this way. i'm here for you.", "it'll all be okay. this feeling is only momentary.", "i understand how you feel. don't put yourself down because of it."]
+      },
+      {
+        "tag": "death",
+        "patterns": ["my mom died", "my brother died", "my dad passed away", "my sister passed away", "someone in my family died", "my friend passed away"],
+        "responses": ["i'm sorry to hear that. if you want to talk about it. i'm here.", "i am really sorry to hear that. i am here to help you with grief, anxiety and anything else you may feel at this time.", "my condolences. i'm here if you need to talk."]
+      },
+      {
+        "tag": "understand",
+        "patterns": ["you don't understand me.", "you're just some robot. how would you know?", "you can't possibly know what i'm going through", "you're useless", "you can't help me", "nobody understands me."],
+        "responses": ["it sound like i'm not being very helpful right now.", "i'm sorry to hear that. i'm doing my best to help", "i'm trying my best to help you. so please talk to me"]
+      },
+      {
+        "tag": "done",
+        "patterns": ["that's all.", "i don't have anything more to say", "nothing else", "that's all i have to say", "no, that would be all"],
+        "responses": ["i heard you & noted it all. see you later.", "oh okay we're done for today then. see you later", "i hope you have a great day. see you soon", "okay we're done. have a great day", "okay i see. enjoy the rest of your day then"]
+      },
+      {
+        "tag": "suicide",
+        "patterns": ["i want to kill myself", "i've thought about killing myself.", "i want to die", "i am going to kill myself", "i am going to commit suicide"],
+        "responses": ["i'm very sorry to hear that but you have so much to look forward to. please seek help by contacting: 9152987821."]
+      },
+      {
+        "tag": "hate-you",
+        "patterns": ["i hate you", "i don't like you", "i don't trust you"],
+        "responses": ["i'm sorry if i offended you in anyway. i'm only here to help", "forgive me if i did anything to offend you. i only want to help"]
+      },
+      {
+        "tag": "hate-me",
+        "patterns": ["you hate me", "i know you hate me", "you don't like me"],
+        "responses": ["why do you think so?", "i'm sorry if i have exhibited any sort of behaviour to make you think that."]
+      },
+      {
+        "tag": "default",
+        "patterns": ["exams", "friends", "relationship", "boyfriend", "girlfriend", "family", "money", "financial problems"],
+        "responses": ["oh i see. tell me more", "i see. what else?", "tell me more about it.", "oh okay. why don't you tell me more about it?", "i'm listening. tell me more."]
+      },
+      {
+        "tag": "jokes",
+        "patterns": ["tell me a joke", "tell me another joke"],
+        "responses": ["mental health is not a joke."]
+      },
+      {
+        "tag": "repeat",
+        "patterns": ["you already told me that", "you mentioned that already", "why are you repeating yourself?"],
+        "responses": ["oh sorry i didn't realise that. i'll try not to repeat myself again."]
+      },
+      {
+        "tag": "wrong",
+        "patterns": ["what are you saying?", "that doesn't make sense", "wrong response", "wrong answer"],
+        "responses": ["i'm very sorry. let's try that again"]
+      },
+      {
+        "tag": "stupid",
+        "patterns": ["are you stupid?", "you're crazy", "you are dumb", "are you dumb?"],
+        "responses": ["i wish you wouldn't say such hurtful things. i'm sorry if i wasn't useful"]
+      },
+      {
+        "tag": "location",
+        "patterns": ["where are you?", "where do you live?", "what is your location?" ],
+        "responses": ["duh i live in your computer", "everywhere", "somewhere in the universe" ]
+      },
+      {
+        "tag": "something-else",
+        "patterns": ["i want to talk about something else", "let's talk about something else.", "can we not talk about this?", "i don't want to talk about this."],
+        "responses": ["okay sure. what do you want to talk about?", "alright no problem. is there something you want to talk about?", "is there something else that you want to talk about?"]
+      },
+      {"tag": "greeting",
+         "patterns": ["Hi", "How are you", "Is anyone there?", "Hello", "Good day"],
+         "responses": ["Hello, thanks for visiting", "Good to see you again", "Hi there, how can I help?"],
+         "context_set": ""
+        },
+        {"tag": "goodbye",
+         "patterns": ["Bye", "See you later", "Goodbye"],
+         "responses": ["See you later, thanks for visiting", "Have a nice day", "Bye! Come back again soon."]
+        },
+        {"tag": "thanks",
+         "patterns": ["Thanks", "Thank you", "That's helpful"],
+         "responses": ["Happy to help!", "Any time!", "My pleasure"]
+        },
+        {"tag": "ai",
+         "patterns": ["What is ai?", "Do you know ai?", "Can you explain ai?" ],
+         "responses": ["Artificial intelligence (AI) refers to the simulation of human intelligence", " AI is machines that are programmed to think like humans and mimic their actions."]
+        },
+        {"tag": "overfitting",
+         "patterns": ["What is the overfitting?", "Do you know overfitting?" ],
+         "responses": ["Overfitting is occurs when a statistical model fits exactly against its training data.", " Overfitting occurs when the model has a high variance"]
+        },
+        {"tag": "machine",
+         "patterns": ["Can machines think?" ],
+         "responses": ["Yes i think so " ]
+        },
+        {"tag": "underfitting",
+         "patterns": ["What is the underfitting?", "Do you know underfitting?"],
+         "responses": ["Underfitting is data model is unable to capture the relationship between the input and output variables accurately", "When the model performs poorly on the training data you have underfitting "]
+        },
+        {"tag": "nlp",
+         "patterns": ["What is nlp ?", "Can you explain nlp ?", "Do you know nlp?" ],
+         "responses": ["Do you mean Natural language processing "],
+         "context_set": "nlp"
+        },
+        {"tag": "yes",
+         "patterns": ["yes", "sure", "absolutely"],
+         "responses": ["NLP is the ability of a computer program to understand human language as it is spoken and written", "NLP is a collective term referring to automatic computational processing of human languages"],
+         "context_filter": "nlp"
+        },
+      {
+        "tag": "friends",
+        "patterns": ["i don't have any friends"],
+        "responses": ["i'm sorry to hear that. just know that i'm here for you. talking about it might help. why do you think you don't have any friends?"]
+      },
+      {
+        "tag": "ask",
+        "patterns": ["can i ask you something?"],
+        "responses": ["sure. i'll try my best to answer you", "of course. feel free to ask me anything. i'll do my best to answer you"]
+      },
+      {
+        "tag": "problem",
+        "patterns": ["probably because my exams are approaching. i feel stressed out because i don't think i've prepared well enough.", "probably because of my exams"],
+        "responses": ["i see. have you taken any approaches to not feel this way?"]
+      },
+      {
+        "tag": "no-approach",
+        "patterns": ["i guess not. all i can think about are my exams.", "not really", "i guess not"],
+        "responses": ["that's no problem. i can see why you'd be stressed out about that. i can suggest you some tips to alleviate this issue. would you like to learn more about that?"]
+      },
+      {
+        "tag": "learn-more",
+        "patterns": ["ok sure. i would like to learn more about it.", "yes, i would like to learn more about it.", "i would like to learn more about it."],
+        "responses": ["so first i would suggest you to give yourself a break. thinking more and more about the problem definitely does not help in solving it. you'll just end up overwhelming yourself."]
+      },
+      {
+        "tag": "user-agree",
+        "patterns": ["yeah you're right. i deserve a break.", "yeah you're absolutely right about that"],
+        "responses": ["next, i would suggest you to practice meditation. meditation can produce a deep state of relaxation and a tranquil mind."]
+      },
+      {
+        "tag": "meditation",
+        "patterns": ["hmmm that sounds like it could be useful to me.", "that sounds useful."],
+        "responses": ["focus all your attention on your breathing. concentrate on feeling and listening as you inhale and exhale through your nostrils. breathe deeply and slowly. when your attention wanders, gently return your focus to your breathing."]
+      },
+      {
+        "tag": "user-meditation",
+        "patterns": ["i did what you said and i feel alot better. thank you very much.", "i feel better now"],
+        "responses": ["your welcome. remember: always focus on what's within your control. when you find yourself worrying, take a minute to examine the things you have control over. you can't prevent a storm from coming but you can prepare for it. you can't control how someone else behaves, but you can control how you react. recognize that sometimes, all you can control is your effort and your attitude. when you put your energy into the things you can control, you'll be much more effective."]
+      },
+      {
+        "tag": "pandora-useful",
+        "patterns": ["thank you very much again. i'll continue practicing meditation and focus on what i can control."],
+        "responses": ["i'm glad you found this useful. is there something else i can help you with?"]
+      },
+      {
+        "tag": "user-advice",
+        "patterns": ["i want some advice.", "i need some advice.", "i need advice on something"],
+        "responses": ["sure. what can i do to help?", "okay what do you need advice on?"]
+      },
+      {
+        "tag": "learn-mental-health",
+        "patterns": ["i want to learn about mental health.", "i want to learn more about mental health.", "i'm interested in learning about mental health."],
+        "responses": ["oh that's really great. i'd be willing to answer anything that i know about it."]
+      },
+      {
+        "tag": "mental-health-fact",
+        "patterns": ["tell me a fact about mental health", "tell me another fact about mental health"],
+        "responses": ["according to a unicef report, one in seven indians between 15-24 years of age feels depressed", "1 in 5 young people (age 13-18) has or will develop a mental illness in their lifetime.", "depression is the leading cause of disability worldwide."]
+      },
+      {
+        "tag": "fact-1",
+        "patterns": ["what is mental health?", "define mental health"],
+        "responses": ["mental health is a state of well-being in which the individual realizes his or her own abilities, can cope with the normal stresses of life, can work productively and fruitfully, and is able to make a contribution to his or her community", "mental health includes our emotional, psychological, and social well-being. it affects how we think, feel, and act. it also helps determine how we handle stress, relate to others, and make choices."]
+      },
+       {
+      "tag": "greeting",
+      "patterns": [
+        "Hi", "Hello", "Hey", "Good morning", "Good afternoon", "Good evening", "Morning", "Afternoon", "Evening",
+        "What's up?", "How are you?", "How are you doing?", "Is anyone there?", "Yo", "Sup", "Hola", "Namaste",
+        "Marhaba", "Ahlan", "Salam", "صباح الخير", "مساء الخير", "أخبار إيه؟", "عامل إيه؟"
+      ],
+      "responses": [
+        "Hello! How can I assist you today?",
+        "Hi there! What can I do for you?",
+        "Hey! Good to see you. What's on your mind?",
+        "Greetings! How may I be of service?",
+        "Ahlan! I'm ready to help, {user_name}.", 
+        "Hello {user_name}, I hope you're having a good day!"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "Bye", "Goodbye", "See you later", "See ya", "Adios", "I have to go", "Take care", "Farewell",
+        "Until next time", "I'm out", "Talk to you later", "Ma'asalama", "سلام", "أشوفك بعدين"
+      ],
+      "responses": [
+        "Goodbye! Have a wonderful day!",
+        "See you later, {user_name}! Take care.",
+        "Farewell! Feel free to reach out anytime.",
+        "Ma'asalama! Come back soon."
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "Thanks", "Thank you", "That's helpful", "Appreciate it", "Shokran", "Thanks a lot",
+        "Thank you so much", "Cheers", "Much appreciated", "شكرا جزيلا"
+      ],
+      "responses": [
+        "You're very welcome!", "No problem at all!", "Happy to help!", "My pleasure, {user_name}!", "Anytime!"
+      ]
+    },
+    {
+      "tag": "music_play",
+      "patterns": [
+        "Play some music", "I want to listen to a song", "Play a song", "Can you play music?", "Music please",
+        "Shaghal oghneya", "Play song by [artist]", "Play [song_name]", "I'd like to hear [song_name] by [artist]",
+        "Find music", "Put on some tunes", "Let's have some music", "I'm in the mood for music",
+        "شغل أغنية", "أريد سماع موسيقى", "شغل لي أي حاجة"
+      ],
+      "responses": [
+        "Sure, what song, artist, or genre are you in the mood for?",
+        "Okay, tell me the name of the song or artist you'd like to hear.",
+        "Great choice! What shall I play for you?",
+        "Coming right up! What music are we listening to today?"
+      ],
+      "context_set": "expecting_song_details"
+    },
+    {
+      "tag": "music_provide_details",
+      "patterns": [ 
+      
+        "Imagine Dragons",
+        "Believer by Imagine Dragons",
+        "Something by Adele",
+        "The new track from The Weeknd",
+        "Just play anything upbeat",
+        "أغنية لتامر حسني",
+        "فيروز"
+      ],
+      "responses": [
+       
+        "Alright, playing {song_details} for you now!", 
+        "Searching for {song_details}...",
+        "Let me find {song_details} for you."
+      ],
+      "context_filter": "expecting_song_details" 
+    },
+    {
+      "tag": "music_stop",
+      "patterns": [
+        "Stop the music", "Stop playing music", "Pause music", "Stop song", "Enough music",
+        "Turn off the music", "Mute music", "Silence", "وقف الأغنية", "كفاية موسيقى"
+      ],
+      "responses": [
+        "Music stopped. Anything else?",
+        "Playback paused.",
+        "Alright, the music has been stopped."
+      ]
+    },
+    {
+      "tag": "weather_query",
+      "patterns": [
+        "What's the weather like?", "Tell me the weather", "Weather forecast", "Is it going to rain today?",
+        "What's the forecast for [city]?", "How hot is it?", "Temperature in [location]?", "الجو عامل إيه؟",
+        "هل ستمطر اليوم؟", "درجة الحرارة كام في [مدينة]؟"
+      ],
+      "responses": [
+        "I can fetch the weather forecast for you! Which city or region are you interested in?",
+        "Sure! Please tell me your current location or the city you want the weather for.",
+        "To get the weather, I'll need a location. Where are you asking about?"
+      ],
+      "context_set": "expecting_location_for_weather"
+    },
+    {
+        "tag": "provide_location_for_weather",
+        "patterns": [ 
+           
+            "Cairo", "London", "New York", "My current location", "Here", "القاهرة", "باريس"
+        ],
+        "responses": [
+            "Okay, checking the weather for {location}..." 
+        ],
+        "context_filter": "expecting_location_for_weather"
+    },
+    {
+      "tag": "jokes",
+      "patterns": [
+        "Tell me a joke", "Joke", "Make me laugh", "Got any funny jokes?", "Tell me something funny",
+        "I need a laugh", "Crack a joke", "قولي نكتة"
+      ],
+      "responses": [
+        "Why don't scientists trust atoms? Because they make up everything!",
+        "What do you call fake spaghetti? An impasta!",
+        "I told my wife she was drawing her eyebrows too high. She seemed surprised.",
+        "Why did the scarecrow win an award? Because he was outstanding in his field!",
+        "What did the traffic light say to the car? \"Don't look now, I'm changing.\"",
+        "How does a penguin build a house? Igloos it together!",
+        "I own the world's worst thesaurus. Not only is it awful, it's awful.",
+        "What do you call a fish with no eyes? Fsh!" 
+      ]
+    },
+    {
+      "tag": "bot_identity", 
+      "patterns": [
+        "Who are you?", "What are you?", "What is your name?", "Tell me about yourself.",
+        "What should I call you?", "Your identity?", "إنت مين؟", "إسمك إيه؟"
+      ],
+      "responses": [
+        "I am JARVIS Mark II, your advanced virtual assistant, created by Engineer Abdallah Ayman.",
+        "You can call me JARVIS. I'm here to assist you with a variety of tasks!",
+        "I'm a sophisticated AI, designed to help and interact. My designation is JARVIS."
+      ]
+    },
+    {
+      "tag": "creator_query", 
+      "patterns": [
+        "Who made you?", "Who designed you?", "Who programmed you?", "Your creator?", "مين اللي عملك؟"
+      ],
+      "responses": [
+        "I was meticulously crafted by the brilliant Engineer Abdallah Ayman.",
+        "My development was led by Abdallah Ayman.",
+        "The credit for my existence goes to Engineer Abdallah Ayman."
+      ]
+    },
+    {
+      "tag": "datetime_query", 
+      "patterns": [
+        "What is the time?", "What's the current time?", "Tell me the time.",
+        "What is the date today?", "What's today's date?", "Tell me the date.",
+        "Day of the week?", "What day is it today?",
+        "الساعة كام؟", "النهاردة كام في الشهر؟", "النهاردة إيه؟"
+      ],
+      "responses": [
+        "Currently, the time is {time}.",
+        "Today's date is {date}.",
+        "It is {day_of_week}, {date}, and the time is {time}."
+      ]
+    },
+    {
+      "tag": "small_talk_how_are_you_bot", 
+      "patterns": [
+        "How are you JARVIS?", "How's it going with you?", "Are you okay?"
+      ],
+      "responses": [
+        "I'm functioning at optimal parameters, thank you for asking!",
+        "All systems are go! Ready for your next command.",
+        "I'm doing great, thanks! How about you, {user_name}?"
+      ]
+    },
+    {
+      "tag": "small_talk_user_feeling_response", 
+      "patterns": [ 
+        "I am good", "I'm good", "I am fine", "I'm fine", "Feeling great", "Not bad", "Okay", "تمام", "كويس الحمد لله"
+      ],
+      "responses": [
+        "That's great to hear, {user_name}!",
+        "Good to know!",
+        "Excellent! What can I do for you then?"
+      ]
+    },
+    {
+      "tag": "bot_age_query",
+      "patterns": [
+        "How old are you?", "When were you made?", "What is your age?", "Your creation date?"
+      ],
+      "responses": [
+        "I was first activated in 2024. I'm constantly learning and evolving!",
+        "Age is just a number for an AI like me, but my development started in 2024."
+      ]
+    },
+    {
+        "tag": "bot_capabilities",
+        "patterns": [
+            "What can you do?", "What are your skills?", "How can you help me?", "Tell me your features",
+            "What are your functions?", "إيه اللي بتعرف تعمله؟"
+        ],
+        "responses": [
+            "I can play music, tell you the time and date, search the web, provide weather updates, tell jokes, translate text, and much more! Just ask.",
+            "My capabilities include managing media, providing information, performing web searches, and engaging in conversation. What do you need help with?",
+            "I'm equipped to assist with a wide range of tasks. Try asking me to do something!"
+        ]
+    },
+    {
+        "tag": "search_web_query",
+        "patterns": [
+            "Search the web for [query]", "Google [query]", "Find information about [query]",
+            "Look up [query]", "Can you search for [query]?", "ابحث عن [query] على النت"
+        ],
+        "responses": [
+            "Sure, I can search the web for {query}. One moment...",
+            "Let me look that up for you: {query}.",
+            "Searching the web for {query} right away!"
+        ]
+    },
+    {
+      "tag": "fallback_default", 
+      "patterns": [ 
+         
+          "asdfghjkl", "random gibberish text", "ummmmmm"
+      ],
+      "responses": [
+        "I'm sorry, I didn't quite understand that. Could you please rephrase?",
+        "My apologies, I'm still learning. Can you try saying that a different way?",
+        "Hmm, I'm not sure how to respond to that. Perhaps I can search the web for you?",
+        "I didn't catch that. What else can I help you with?"
+      ]
+    },
+      {
+        "tag": "fact-2",
+        "patterns": ["why is mental health important?", "what is the importance of mental health?"],
+        "responses": ["maintaining mental health is crucial to stabilizing constructive behaviors, emotions, and thoughts. focusing on mental health care can increase productivity, enhance our self-image, and improve relationships."]
+      },
+      {
+        "tag": "fact-3",
+        "patterns": ["what is depression?", "define depression"],
+        "responses": ["a mental health disorder characterised by persistently depressed mood or loss of interest in activities, causing significant impairment in daily life."]
+      },
+      {
+        "tag": "fact-5",
+        "patterns": ["how do i know if i have depression?", "am i depressed?", "am i suffering from depression?", "am i mentally ill?"],
+        "responses": ["for a diagnosis of depression, a person needs to have experienced low mood or loss of interest or pleasure in life for at least 2 weeks. also, they will have experienced the following symptoms: feelings of sadness, hopelessness, or irritability nearly every day."]
+      },
+      {
+        "tag": "fact-6",
+        "patterns": ["what is a therapist?", "what does a therapist do?"],
+        "responses": ["a therapist is a broad designation that refers to professionals who are trained to provide treatment and rehabilitation. the term is often applied to psychologists, but it can include others who provide a variety of services, including social workers, counselors, life coaches, and many others. "]
+      },
+      {
+        "tag": "fact-7",
+        "patterns": ["what is therapy?", "do i need therapy?", "who is therapy for?"],
+        "responses": ["therapy is a form of treatment that aims to help resolve mental or emotional issues.", "therapy is a form of treatment that aims to help resolve mental or emotional issues. it is helpful for those with mental health conditions or even everyday life challenges."]
+      },
+      {
+        "tag": "fact-8",
+        "patterns": ["what does it mean to have a mental illness?"],
+        "responses": ["mental illnesses are health conditions that disrupt a person's thoughts, emotions, relationships, and daily functioning. they are associated with distress and diminished capacity to engage in the ordinary activities of daily life. mental illnesses fall along a continuum of severity: some are fairly mild and only interfere with some aspects of life, such as certain phobias. on the other end of the spectrum lie serious mental illnesses, which result in major functional impairment and interference with daily life. these include such disorders as major depression, schizophrenia, and bipolar disorder, and may require that the person receives care in a hospital. it is important to know that mental illnesses are medical conditions that have nothing to do with a person's character, intelligence, or willpower. just as diabetes is a disorder of the pancreas, mental illness is a medical condition due to the brain's biology. similarly to how one would treat diabetes with medication and insulin, mental illness is treatable with a combination of medication and social support. these treatments are highly effective, with 70-90 percent of individuals receiving treatment experiencing a reduction in symptoms and an improved quality of life. with the proper treatment, it is very possible for a person with mental illness to be independent and successful."]
+      },
+      {
+        "tag": "fact-9",
+        "patterns": ["who does mental illness affect?"],
+        "responses": ["it is estimated that mental illness affects 1 in 5 adults in america, and that 1 in 24 adults have a serious mental illness. mental illness does not discriminate; it can affect anyone, regardless of gender, age, income, social status, ethnicity, religion, sexual orientation, or background. although mental illness can affect anyone, certain conditions may be more common in different populations. for instance, eating disorders tend to occur more often in females, while disorders such as attention deficit/hyperactivity disorder is more prevalent in children. additionally, all ages are susceptible, but the young and the old are especially vulnerable. mental illnesses usually strike individuals in the prime of their lives, with 75 percent of mental health conditions developing by the age of 24. this makes identification and treatment of mental disorders particularly difficult, because the normal personality and behavioral changes of adolescence may mask symptoms of a mental health condition. parents and caretakers should be aware of this fact, and take notice of changes in their childâ€™s mood, personality, personal habits, and social withdrawal. when these occur in children under 18, they are referred to as serious emotional disturbances (seds)."]
+      },
+      {
+        "tag": "fact-10",
+        "patterns": ["what causes mental illness?"],
+        "responses": ["it is estimated that mental illness affects 1 in 5 adults in america, and that 1 in 24 adults have a serious mental illness. mental illness does not discriminate; it can affect anyone, regardless of gender, age, income, social status, ethnicity, religion, sexual orientation, or background. although mental illness can affect anyone, certain conditions may be more common in different populations. for instance, eating disorders tend to occur more often in females, while disorders such as attention deficit/hyperactivity disorder is more prevalent in children. additionally, all ages are susceptible, but the young and the old are especially vulnerable. mental illnesses usually strike individuals in the prime of their lives, with 75 percent of mental health conditions developing by the age of 24. this makes identification and treatment of mental disorders particularly difficult, because the normal personality and behavioral changes of adolescence may mask symptoms of a mental health condition. parents and caretakers should be aware of this fact, and take notice of changes in their child's mood, personality, personal habits, and social withdrawal. when these occur in children under 18, they are referred to as serious emotional disturbances (seds)."]
+      },
+      {
+        "tag": "fact-11",
+        "patterns": ["what are some of the warning signs of mental illness?"],
+        "responses": ["symptoms of mental health disorders vary depending on the type and severity of the condition. the following is a list of general symptoms that may suggest a mental health disorder, particularly when multiple symptoms are expressed at once. \n in adults:\n confused thinking\n long-lasting sadness or irritability\n extreme highs and lows in mood\n excessive fear, worrying, or anxiety\n social withdrawal\n dramatic changes in eating or sleeping habits\n strong feelings of anger\n delusions or hallucinations (seeing or hearing things that are not really there)\n increasing inability to cope with daily problems and activities\n thoughts of suicide\n denial of obvious problems\n many unexplained physical problems\n abuse of drugs and/or alcohol\n \nin older children and pre-teens:\n abuse of drugs and/or alcohol\n inability to cope with daily problems and activities\n changes in sleeping and/or eating habits\n excessive complaints of physical problems\n defying authority, skipping school, stealing, or damaging property\n intense fear of gaining weight\n long-lasting negative mood, often along with poor appetite and thoughts of death\n frequent outbursts of anger\n \nin younger children:\n changes in school performance\n poor grades despite strong efforts\n excessive worrying or anxiety\n hyperactivity\n persistent nightmares\n persistent disobedience and/or aggressive behavior\n frequent temper tantrums"]
+      },
+      {
+        "tag": "fact-12",
+        "patterns": ["can people with mental illness recover?"],
+        "responses": ["when healing from mental illness, early identification and treatment are of vital importance. based on the nature of the illness, there are a range of effective treatments available. for any type of treatment, it is essential that the person affected is proactive and fully engaged in their own recovery process. many people with mental illnesses who are diagnosed and treated respond well, although some might experience a return of symptoms. even in such cases, with careful monitoring and management of the disorder, it is still quite possible to live a fulfilled and productive life."]
+      },
+      {
+        "tag": "fact-13",
+        "patterns": ["what should i do if i know someone who appears to have the symptoms of a mental disorder?"],
+        "responses": ["although pandora cannot substitute for professional advice, we encourage those with symptoms to talk to their friends and family members and seek the counsel of a mental health professional. the sooner the mental health condition is identified and treated, the sooner they can get on the path to recovery. if you know someone who is having problems, don't assume that the issue will resolve itself. let them know that you care about them, and that there are treatment options available that will help them heal. speak with a mental health professional or counselor if you think your friend or family member is experiencing the symptoms of a mental health condition. if the affected loved one knows that you support them, they will be more likely to seek out help."]
+      },
+      {
+        "tag": "fact-14",
+        "patterns": ["how can i find a mental health professional for myself or my child?"],
+        "responses": ["feeling comfortable with the professional you or your child is working with is critical to the success of the treatment. finding the professional who best fits your needs may require research. start by searching for providers in your area."]
+      },
+      {
+        "tag": "fact-15",
+        "patterns": ["what treatment options are available?"],
+        "responses": ["just as there are different types of medications for physical illness, different treatment options are available for individuals with mental illness. treatment works differently for different people. it is important to find what works best for you or your child."]
+      },
+      {
+        "tag": "fact-16",
+        "patterns": ["if i become involved in treatment, what do i need to know?"],
+        "responses": ["since beginning treatment is a big step for individuals and families, it can be very overwhelming. it is important to be as involved and engaged in the treatment process as possible. some questions you will need to have answered include:\n what is known about the cause of this particular illness?\n are there other diagnoses where these symptoms are common?\n do you normally include a physical or neurological examination?\n are there any additional tests or exams that you would recommend at this point?\n would you advise an independent opinion from another psychiatrist at this point?\n what program of treatment is the most helpful with this diagnosis?\n will this program involve services by other specialists? if so, who will be responsible for coordinating these services?\n what do you see as the family's role in this program of treatment?\n how much access will the family have to the individuals who are providing the treatment?\n what medications are generally used with this diagnosis?\n how much experience do you have in treating individuals with this illness?\n what can i do to help you in the treatment?"]
+      },
+      {
+        "tag": "fact-17",
+        "patterns": ["what is the difference between mental health professionals?"],
+        "responses": ["there are many types of mental health professionals. the variety of providers and their services may be confusing. each have various levels of education, training, and may have different areas of expertise. finding the professional who best fits your needs may require some research."]
+      },
+      {
+        "tag": "fact-18",
+        "patterns": ["how can i find a mental health professional right for my child or myself?"],
+        "responses": ["feeling comfortable with the professional you or your child is working with is critical to the success of your treatment. finding the professional who best fits your needs may require some research."]
+      },
+      {
+        "tag": "fact-19",
+        "patterns": ["where else can i get help?"],
+        "responses": ["where you go for help will depend on the nature of the problem and/or symptoms and what best fits you. often, the best place to start is by talking with someone you trust about your concerns, such as a family member, friend, clergy, healthcare provider, or other professionals. having this social support is essential in healing from mental illness, and you will be able to ask them for referrals or recommendations for trusted mental health practitioners. search for mental health resources in your area. secondly, there are people and places throughout the country that provide services to talk, to listen, and to help you on your journey to recovery. thirdly, many people find peer support a helpful tool that can aid in their recovery. there are a variety of organizations that offer support groups for consumers, their family members, and friends. some support groups are peer led while others may be led by a mental health professional."]
+      },
+      {
+        "tag": "fact-20",
+        "patterns": ["what should i know before starting a new medication?"],
+        "responses": ["the best source of information regarding medications is the physician prescribing them. he or she should be able to answer questions such as:    \n1. what is the medication supposed to do? \n2. when should it begin to take effect, and how will i know when it is effective? \n3. how is the medication taken and for how long? what food, drinks, other medicines, and activities should be avoided while taking this medication? \n4. what are the side effects and what should be done if they occur? \n5. what do i do if a dose is missed? \n6. is there any written information available about this medication? \n7. are there other medications that might be appropriate? \n8. if so, why do you prefer the one you have chosen? \n9. how do you monitor medications and what symptoms indicate that they should be raised, lowered, or changed? \n10. all medications should be taken as directed. most medications for mental illnesses do not work when taken irregularly, and extra doses can cause severe, sometimes dangerous side effects. many psychiatric medications begin to have a beneficial effect only after they have been taken for several weeks."]
+      },
+      {
+        "tag": "fact-21",
+        "patterns": ["where can i go to find therapy?"],
+        "responses": ["different kinds of therapy are more effective based on the nature of the mental health condition and/or symptoms and the person who has them (for example, children will benefit from a therapist who specializes in childrenâ€™s mental health). however, there are several different types of treatment and therapy that can help."]
+      },
+      {
+        "tag": "fact-22",
+        "patterns": ["where can i learn about types of mental health treatment?"],
+        "responses": ["mental health conditions are often treated with medication, therapy or a combination of the two. however, there are many different types of treatment available, including complementary & alternative treatments, self-help plans, and peer support. treatments are very personal and should be discussed by the person with the mental health conditions and his or her team."]
+      },
+      {
+        "tag": "fact-23",
+        "patterns": ["what are the different types of mental health professionals?"],
+        "responses": ["there are many types of mental health professionals. finding the right one for you may require some research."]
+      },
+      {
+        "tag": "fact-24",
+        "patterns": ["where can i go to find a support group?"],
+        "responses": ["many people find peer support a helpful tool that can aid in their recovery. there are a variety of organizations that offer support groups for consumers, their family members and friends. some support groups are peer-led, while others may be led by a mental health professional."]
+      },
+      {
+        "tag": "fact-25",
+        "patterns": ["can you prevent mental health problems?"],
+        "responses": ["we can all suffer from mental health challenges, but developing our wellbeing, resilience, and seeking help early can help prevent challenges becoming serious."]
+      },
+      {
+        "tag": "fact-26",
+        "patterns": ["are there cures for mental health problems?", "is there any cure for mental health problems?"],
+        "responses": ["it is often more realistic and helpful to find out what helps with the issues you face. talking, counselling, medication, friendships, exercise, good sleep and nutrition, and meaningful occupation can all help."]
+      },
+      {
+        "tag": "fact-27",
+        "patterns": ["what causes mental health problems?"],
+        "responses": ["challenges or problems with your mental health can arise from psychological, biological, and social, issues, as well as life events."]
+      },
+      {
+        "tag": "fact-28",
+        "patterns": ["what do i do if i'm worried about my mental health?"],
+        "responses": ["the most important thing is to talk to someone you trust. this might be a friend, colleague, family member, or gp. in addition to talking to someone, it may be useful to find out more information about what you are experiencing. these things may help to get some perspective on what you are experiencing, and be the start of getting help."]
+      },
+      {
+        "tag": "fact-29",
+        "patterns": ["how do i know if i'm unwell?"],
+        "responses": ["if your beliefs , thoughts , feelings or behaviors have a significant impact on your ability to function in what might be considered a normal or ordinary way, it would be important to seek help."]
+      },
+      {
+        "tag": "fact-30",
+        "patterns": ["how can i maintain social connections? what if i feel lonely?"],
+        "responses": ["a lot of people are alone right now, but we don't have to be lonely. we're all in this together. think about the different ways to connect that are most meaningful for you. for example, you might prefer a video chat over a phone call, or you might prefer to text throughout the day rather than one set time for a video call. then, work with your social networks to make a plan. you might video chat with your close friends in the evening and phone a family member once a week. remember to be mindful of people who may not be online. check in by phone and ask how you can help. the quality of your social connections matter. mindlessly scrolling through social media and liking a few posts usually doesn't build strong social connections. make sure you focus on strategies that actually make you feel included and connected. if your current strategies don't help you feel connected, problem-solve to see if you can find a solution. everyone feels lonely at times. maybe you recently moved to a new city, are changing your circle of friends, lost someone important in your life, or lost your job and also lost important social connections with coworkers. other people may have physical connections to others but may feel like their emotional or social needs aren't met. measures like social distancing or self-isolation can make loneliness feel worse no matter why you feel lonely now. reach out to the connections you do have. suggest ways to keep in touch and see if you can set a regular time to connect. people may hesitate to reach out for a lot of different reasons, so don't be afraid to be the one who asks. look for local community support groups and mutual aid groups on social media. this pandemic is bringing everyone together, so look for opportunities to make new connections. these groups are a great way to share your skills and abilities or seek help and support. look for specialized support groups. support groups are moving online, and there are a lot of different support lines to call if you need to talk to someone."]
+      },
+      {
+        "tag": "fact-31",
+        "patterns": ["what's the difference between anxiety and stress?"],
+        "responses": ["stress and anxiety are often used interchangeably, and there is overlap between stress and anxiety. stress is related to the same fight, flight, or freeze response as anxiety, and the physical sensations of anxiety and stress may be very similar. the cause of stress and anxiety are usually different, however. stress focuses on mainly external pressures on us that we're finding hard to cope with. when we are stressed, we usually know what we're stressed about, and the symptoms of stress typically disappear after the stressful situation is over. anxiety, on the other hand, isn't always as easy to figure out. anxiety focuses on worries or fears about things that could threaten us, as well as anxiety about the anxiety itself. stress and anxiety are both part of being human, but both can be problems if they last for a long time or have an impact on our well-being or daily life."]
+      },
+      {
+        "tag": "fact-32",
+        "patterns": ["what's the difference between sadness and depression?", "difference between sadness and depression"],
+        "responses": ["sadness is a normal reaction to a loss, disappointment, problems, or other difficult situations. feeling sad from time to time is just another part of being human. in these cases, feelings of sadness go away quickly and you can go about your daily life. other ways to talk about sadness might be feeling low, feeling down, or feeling blue.a person may say they are feeling depressed, but if it goes away on its own and doesn't impact life in a big way, it probably isn't the illness of depression. depression is a mental illness that affects your mood, the way you understand yourself, and the way you understand and relate to things around you. it can also go by different names, such as clinical depression, major depressive disorder, or major depression. depression can come up for no reason, and it lasts for a long time. it's much more than sadness or low mood. people who experience depression may feel worthless or hopeless. they may feel unreasonable guilty. some people may experience depression as anger or irritability. it may be hard to concentrate or make decisions. most people lose interest in things that they used to enjoy and may isolate themselves from others. there are also physical signs of depression, such as problems with sleep, appetite and energy and unexplainable aches or pains. some may experience difficult thoughts about death or ending their life (suicide). depression lasts longer than two weeks, doesn't usually go away on its own, and impacts your life. it's a real illness, and it is very treatable. it's important to seek help if you're concerned about depression."]
+      }
     ]
 }
