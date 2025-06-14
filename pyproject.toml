@@ -1,0 +1,12 @@
+[project]
+name = "graduation-project-smart"  # غير الاسم ده لاسم المشروع بتاعك
+version = "0.1.0"  # ممكن تسيبها زي ما هي
+description = "My Streamlit app"  # ممكن تعدل الـdescription دي
+dependencies = [
+  "streamlit",
+  "tensorflow",
+  "numpy",
+]
+
+[tool.uv]
+python-version = "3.11"  
