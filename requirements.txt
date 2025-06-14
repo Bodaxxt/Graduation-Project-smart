@@ -1,0 +1,17 @@
+streamlit==1.25.0
+tensorflow==2.13.0
+pyttsx3==2.9
+SpeechRecognition==3.10.0
+googletrans==4.0.0rc1
+beautifulsoup4==4.12.2
+gTTS==2.3.2
+deep-translator==1.11.1
+pydub==0.25.1
+yt-dlp==2023.7.6
+requests==2.31.0
+googlesearch-python==1.2.3
+audiorecorder==0.3.0
+Pillow==10.0.0
+google-trans-new==1.1.9
+pyautogui==0.9.53
+psutil==5.9.5
