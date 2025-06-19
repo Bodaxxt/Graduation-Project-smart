@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 8501
 
-CMD ["streamlit", "run", "app_streamlit.py"]
+CMD ["streamlit", "run", "app.py"]
