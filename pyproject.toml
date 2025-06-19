@@ -7,6 +7,9 @@ dependencies = [
   "tensorflow",
   "numpy",
 ]
-
-[tool.uv]
-python-version = "3.11"  
+[tool.poetry]
+name = "your-project"
+version = "0.1.0"
+description = ""
+authors = []
+python = "3.11"  # Correct placement
