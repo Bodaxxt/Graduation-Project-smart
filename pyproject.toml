@@ -12,4 +12,4 @@ name = "your-project"
 version = "0.1.0"
 description = ""
 authors = []
-python = "3.11"  # Correct placement
+python = "3.12.3"  # Correct placement
