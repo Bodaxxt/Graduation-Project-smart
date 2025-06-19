@@ -8,7 +8,11 @@ import os
 from tempfile import NamedTemporaryFile
 import datetime
 import webbrowser
-import pyautogui
+try:
+    import pyautogui
+except ImportError:
+    pyautogui = None
+    print("pyautogui is not available in this environment")
 import speech_recognition as sr
 import json
 import pickle
