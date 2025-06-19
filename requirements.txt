@@ -10,6 +10,7 @@ psutil>=5.9.5
 pydub>=0.25.1
 pyautogui>=0.9.53
 pyttsx3==2.90
+python-vlc
 requests==2.31.0
 SpeechRecognition>=3.10.0
 streamlit>=1.29.0
