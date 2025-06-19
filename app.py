@@ -109,6 +109,21 @@ st.set_page_config(
 
 # --- Helper Functions ---
 
+
+from spellchecker import SpellChecker
+
+spell = SpellChecker()
+
+def preprocess_input(text):
+    """معالجة النص المدخل لتحسين التعرف على النوايا."""
+    text = text.lower()  # تحويل النص إلى حروف صغيرة
+    words = text.split()
+    corrected_words = [spell.correction(word) or word for word in words]  # تصحيح الكلمات
+    text = " ".join(corrected_words)
+    text = re.sub(r'[^\w\s]', '', text)  # إزالة علامات الترقيم
+    text = re.sub(r'\s+', ' ', text).strip()  # إزالة المسافات الزائدة
+    return text
+
 def init_db():
     """Initializes the SQLite database for reminders."""
     conn = None
@@ -1273,11 +1288,17 @@ def perform_web_search_and_summarize(query_text):
         try:
             headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"}  # Add User-Agent
             print(f"Attempting to get content from: {first_url}")  # Log content fetch
-            response_req = requests.get(
-                first_url, headers=headers, timeout=15, verify=False, allow_redirects=True  # Disable SSL verification (temporary) and allow redirects
-            )  # Get the page content
-            response_req.raise_for_status()
-            print(f"Content fetched successfully. Status code: {response_req.status_code}")  # Log status
+            try:
+                response_req = requests.get(
+                    first_url, headers=headers, timeout=15, verify=False, allow_redirects=True  # Disable SSL verification (temporary) and allow redirects
+                )  # Get the page content
+                response_req.raise_for_status()
+                print(f"Content fetched successfully. Status code: {response_req.status_code}")  # Log status
+            except requests.exceptions.RequestException as req_err:
+                print(f"Request Error: {req_err}")
+                responses.extend(generate_assistant_response_audio(f"I couldn't access the page. There was a request error: {req_err}", force_speak_st=True))
+                return responses
+            
             # Try different encodings
             try:
                 print("Attempting to parse content with html.parser")
@@ -1294,7 +1315,8 @@ def perform_web_search_and_summarize(query_text):
                         soup = BeautifulSoup(response_req.content.decode('latin-1', 'ignore'), "html.parser")
                     except Exception as e_latin1:
                         print(f"Error parsing with latin-1: {e_latin1}")
-                        raise  # Re-raise the exception if all parsing attempts fail
+                        responses.extend(generate_assistant_response_audio("I couldn't parse the page content.", force_speak_st=True))
+                        return responses
             
             for el_type in [
                 "script",
@@ -1348,10 +1370,10 @@ def perform_web_search_and_summarize(query_text):
                 page_content_summary = (
                     " ".join(summary_parts)
                     if summary_parts
-                    else "Could not extract meaningful summary."
+                    else "Could not extract meaningful summary from this page."
                 )  # Create summary
             else:
-                page_content_summary = "No suitable paragraphs found for summary."
+                page_content_summary = "No suitable paragraphs found for summary on this page."
         except requests.exceptions.SSLError as ssl_err:  # Catch SSL-related errors
             print(f"SSL Error: {ssl_err}")
             page_content_summary = f"SSL Verification Failed: {ssl_err}"  # Customize message
@@ -1368,7 +1390,7 @@ def perform_web_search_and_summarize(query_text):
     final_summary_text = (
         f"Summary: {page_content_summary}"
         if page_content_summary
-        and not page_content_summary.startswith("I had an issue") and not page_content_summary.startswith("SSL Verification Failed") and not page_content_summary.startswith("Request failed") and not page_content_summary.startswith("A major error occurred")
+        and not page_content_summary.startswith("I had an issue") and not page_content_summary.startswith("SSL Verification Failed") and not page_content_summary.startswith("Request failed") and not page_content_summary.startswith("A major error occurred") and not page_content_summary.startswith("Could not extract meaningful summary from this page.") and not page_content_summary.startswith("No suitable paragraphs found for summary on this page.")
         else page_content_summary
     )  # Summary text
     responses.extend(
@@ -1377,7 +1399,7 @@ def perform_web_search_and_summarize(query_text):
         )
     )  # Generate summary message
 
-    if final_summary_text and not final_summary_text.startswith("SSL Verification Failed") and not final_summary_text.startswith("Request failed") and not final_summary_text.startswith("A major error occurred"):  # Skip question if summary failed
+    if final_summary_text and not final_summary_text.startswith("SSL Verification Failed") and not final_summary_text.startswith("Request failed") and not final_summary_text.startswith("A major error occurred") and not page_content_summary.startswith("Could not extract meaningful summary from this page.") and not page_content_summary.startswith("No suitable paragraphs found for summary on this page."):  # Skip question if summary failed
         responses.extend(
             generate_assistant_response_audio(
                 "Would you like me to open this page for more details?",
@@ -1414,6 +1436,11 @@ def get_page_content_detailed(url):
                 url, headers=headers, timeout=10, verify=False, allow_redirects=True
             )  # Get the page content
             response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            print(f"Error getting detailed content for {url}: {e}")
+            return f"Could not fetch or process {url} due to a request error: {e}"
+
+        try:
             try:
                 soup = BeautifulSoup(response.text, "html.parser")
             except Exception as e_soup:
@@ -1467,16 +1494,13 @@ def get_page_content_detailed(url):
                 return (
                     ". ".join(imp_sentences[:5]) + "."
                 ).strip() if imp_sentences else "No specific important sentences found."  # Return important sentences
-            return "No suitable content for detailed summary."
-        except requests.exceptions.RequestException as e:
-            print(f"Error getting detailed content for {url}: {e}")
-            return f"Could not fetch or process {url} due to a request error: {e}"
+            return "No suitable content for detailed summary on this page."
         except Exception as e:
             print(f"Error getting detailed content for {url}: {e}")
-            return f"An error occurred while fetching or processing: {url}. Error: {e}"
+            return f"An error occurred while fetching or processing content from this page: {url}. Error: {e}"
     except Exception as e:
         print(f"Outer Error getting detailed content for {url}: {e}")
-        return f"A major error occurred while fetching or processing: {url}. Error: {e}"
+        return f"A major error occurred while fetching or processing content from this page: {url}. Error: {e}"
 
 def handle_detailed_web_search(query):
     """Handles detailed web searches and provides a summary."""
@@ -1510,7 +1534,7 @@ def handle_detailed_web_search(query):
 
     if content_summary and not content_summary.startswith(
         "Could not"
-    ) and not content_summary.startswith("An error"):
+    ) and not content_summary.startswith("An error") and not content_summary.startswith("No suitable content for detailed summary on this page."):
         print(f"\nDetailed Summary: {content_summary}\n")
         responses.extend(
             generate_assistant_response_audio(
@@ -1529,7 +1553,7 @@ def handle_detailed_web_search(query):
         }  # Set the "open page" context
     else:
         print(f"Detailed content extraction failed: {content_summary}")
-        fail_message = f"Sorry, I {content_summary.lower() if content_summary else 'could not extract detailed content.'}"
+        fail_message = f"Sorry, I {content_summary.lower() if content_summary else 'could not extract detailed content from this page.'}"
         responses.extend(
             generate_assistant_response_audio(fail_message, force_speak_st=True)
         )
@@ -1573,16 +1597,18 @@ def handle_general_conversation_query(query_text):
         print("Empty query provided to handle_general_conversation_query.")
         return is_handled, responses
 
-    # التنبؤ بالنوايا
-    tag, confidence = predict_intent_from_text(query_text)
+    tag, confidence = predict_intent_from_text(query_text) 
     
     if tag:
         print(f"Intent detected: {tag}, Confidence: {confidence:.3f}")
 
-        # تجنب المعالجة إن كانت الثقة منخفضة
-        if confidence < 0.65:
-            print("Confidence too low for intent handling.")
-            return is_handled, responses
+        # تعديل: التعامل مع النوايا ذات الثقة الأقل
+        if confidence < 0.6:  # يمكنك تجربة قيم مختلفة هنا
+            print("Confidence too low for intent handling. Attempting a general response.")
+            # يمكنك هنا إضافة كود لمحاولة التعامل مع الأمر بشكل عام،
+            # مثل البحث عن الكلمات المفتاحية في النص أو استخدام نموذج لغوي عام للإجابة.
+            # في المثال الحالي، سنكتفي بإرجاع أن الأمر لم يتم فهمه.
+            return is_handled, responses  # العودة بدون معالجة النية المحددة
 
         # التأكد من أن الرد لم يُرسل سابقًا
         last_response = ""
@@ -1666,29 +1692,77 @@ def handle_email_sending_st(query, user_email, user_password):
         st.session_state.email_flow_step = "get_content"  # New state
     return responses # Return here to allow new state to take effect
 
+import requests
+import logging
+import os
+import time  # Import time for sleep
 
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+LOCATION_SERVICE_URL = os.environ.get("LOCATION_SERVICE_URL", "https://ipinfo.io/json")
+MAX_RETRIES = 3
+RETRY_DELAY = 2  # seconds
 
 def get_location_st():
-    """Gets the location of the server based on its IP address."""
+    """Gets the server's location, with retry mechanism."""
     responses = []
-    try:
-        data_loc = requests.get("https://ipinfo.io/json", timeout=7).json()  # Get location data
-        responses.extend(
+    for attempt in range(MAX_RETRIES):
+        try:
+            try:
+                logging.info(f"Attempting to get location (attempt {attempt + 1})...")
+                response = requests.get(LOCATION_SERVICE_URL, timeout=7)
+                response.raise_for_status()
+                data_loc = response.json()
+                responses.extend(
+                    generate_assistant_response_audio(
+                        f"Based on the server's IP, it looks like it's near {data_loc.get('city', 'an unknown city')}, {data_loc.get('region', 'an unknown region')}.",
+                        force_speak_st=True,
+                    )
+                )
+                return responses  # Success! Exit loop
+            except requests.exceptions.Timeout:
+                logging.warning("Location service request timed out.")
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(RETRY_DELAY)  # Wait before retrying
+            except requests.exceptions.ConnectionError as e:
+                logging.error(f"Location service connection error: {e}")
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(RETRY_DELAY)
+            except requests.exceptions.RequestException as e:
+                logging.error(f"Location service request error: {e}")
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(RETRY_DELAY)
+            except (ValueError, KeyError) as e:
+                logging.error(f"Location service data parsing error: {e}")
+                responses.extend(
+                    generate_assistant_response_audio(
+                        "I received an invalid response from the location service.",
+                        force_speak_st=True,
+                    )
+                )
+                return responses  # No point retrying data parsing errors
+            except Exception as e:
+                logging.error(f"Unexpected location error: {e}", exc_info=True)
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(RETRY_DELAY) # Retry unless max attempts reached
+            
+            
+        except Exception as outer_e:  # Outer Catch-All for any errors NOT request specific
+            logging.error(f"Outer General Error occurred: {outer_e}", exc_info=True)
+            if attempt < MAX_RETRIES - 1: # Retry unless max attempts reached
+                time.sleep(RETRY_DELAY)
+        
+        
+    # If we reach here, all retries failed
+    responses.extend(
             generate_assistant_response_audio(
-                f"Based on the server's IP, it looks like it's near {data_loc.get('city', 'an unknown city')}, {data_loc.get('region', 'an unknown region')}.",
+                "I couldn't determine the server's location after multiple attempts. There may be a persistent network issue.",
                 force_speak_st=True,
             )
         )
-    except Exception as e:
-        print(f"Location error: {e}")
-        responses.extend(
-            generate_assistant_response_audio(
-                "I couldn't determine the server's location.",
-                force_speak_st=True,
-            )
-        )
-    return responses
 
+    return responses
 
 def translate_text_flow(text_to_translate, target_language_name):
     """Translates text to the specified language."""
@@ -2083,467 +2157,504 @@ def change_system_volume_server(direction, amount=10):
 
 # --- Main Processing Function for Streamlit ---
 def process_command_logic_st(query):
-    """Processes user commands and generates responses in Streamlit."""
-    responses = []  # Collect all assistant text/audio responses here
+    responses = []
+    processed_query = preprocess_input(query)
+    print(f"Original Query: '{query}'")
+    print(f"Processed Query: '{processed_query}'")
 
-    if st.session_state.get("email_flow_step"): # Email
-        if st.session_state.email_flow_step == "get_recipient":
-            st.session_state.email_recipient = query.strip()
-            responses.extend(
-                generate_assistant_response_audio(
-                    f"Okay, what should the email say to {st.session_state.email_recipient}?",
-                    force_speak_st=True,
-                )
-            )
-            st.session_state.email_flow_step = "get_content"
-            return responses
-        elif st.session_state.email_flow_step == "get_content":
-            responses.extend(send_email_st(st.session_state.email_recipient, query.strip(), st.session_state.user_email, st.session_state.user_password))
-            st.session_state.email_flow_step = None  # Email flow over
-            return responses
-   
-
-    context_handled_this_turn = False  # Flag for context handling
-    lc_query = query.lower().strip()  # Normalize query
-
-    if st.session_state.get(
-        "reminder_flow_step"
-    ):  # Reminder flow takes priority
-        responses.extend(
-            manage_reminders_flow_st(query)
-        )  # query is the detail user provided
-        return responses  # End processing here, reminder flow handles it
-
-    if st.session_state.get(
-        "last_assistant_question_context"
-    ):  # Handle context-based follow-up questions
-        context = st.session_state.last_assistant_question_context  # Get context
-        context_type = context.get("type")  # Context type
-        positive_responses_list = [
-            "yes",
-            "sure",
-            "okay",
-            "do it",
-            "yeah",
-            "yep",
-            "please",
-            "confirm",
-            "affirmative",
-            "go ahead", 
-            "open",
-        ]  # Positive responses
-        negative_responses_list = [
-            "no",
-            "nope",
-            "don't",
-            "cancel",
-            "negative",
-            "stop",
-            "don't do it",
-        ]  # Negative responses
-
-        if context_type == "web_search_confirm":  # Web search confirmation context
-            if any(
-                word in lc_query for word in positive_responses_list
-            ):
-                responses.extend(
-                    generate_assistant_response_audio(
-                        f"Okay, searching the web for '{context['query']}'.",
-                        force_speak_st=True,
-                    )
-                )  # Generate "searching" message
-                responses.extend(
-                    perform_web_search_and_summarize(context["query"])
-                )  # Perform search and summarize
-            elif any(word in lc_query for word in negative_responses_list):
-                responses.extend(
-                    generate_assistant_response_audio(
-                        "Alright, I won't search.", force_speak_st=True
-                    )
-                )  # Generate "won't search" message
-            else:  # Unclear response, assume no and clear context
-                responses.extend(
-                    generate_assistant_response_audio(
-                        f"I'm not sure what to do about searching '{context['query']}'. I'll skip it for now.",
-                        force_speak_st=True,
-                    )
-                )
-            st.session_state.last_assistant_question_context = None
-            context_handled_this_turn = True  # Clear context
-
-        elif context_type == "open_page_confirm":  # Open page confirmation context
-            if any(
-                word in lc_query for word in positive_responses_list
-            ):
-                responses.extend(
-                    speak_random_st(
-                        ["Opening the page on the server.", "Alright, opening it on the server."],
-                        force_speak_st=True,
-                    )
-                )  # Generate "opening" message
-                try:
-                    webbrowser.open(context["url"])  # Opens on server
-                except Exception as e:
-                    print(f"Error opening browser on server: {e}")
-            elif any(word in lc_query for word in negative_responses_list):
-                responses.extend(
-                    generate_assistant_response_audio(
-                        "Okay, I won't open it.", force_speak_st=True
-                    )
-                )  # Generate "won't open" message
-            else:
-                responses.extend(
-                    generate_assistant_response_audio(
-                        "I'll assume you don't want to open the page for now.",
-                        force_speak_st=True,
-                    )
-                )
-            st.session_state.last_assistant_question_context = None
-            context_handled_this_turn = True  # Clear context
-
-        elif context_type == "say_translation_confirm":  # Say translation confirmation context
-            if any(
-                word in lc_query for word in positive_responses_list + ["say it"]
-            ):
-                responses.extend(
-                    generate_assistant_response_audio(
-                        context["text"],
-                        lang_code=context["lang_code"],
-                        force_speak_st=True,
-                    )
-                )  # Generate audio in translated language
-            st.session_state.last_assistant_question_context = None
-            context_handled_this_turn = True  # Clear context
-
-        elif context_type == "get_city_for_weather":  # Get city for weather context
-            if query and query != "unintelligible":
-                responses.extend(
-                    get_weather_info(query.strip())
-                )  # Get weather info
-            else:
-                responses.extend(
-                    generate_assistant_response_audio(
-                        "I didn't get the city for the weather. Please try again.",
-                        force_speak_st=True,
-                    )
-                )
-            st.session_state.last_assistant_question_context = None
-            context_handled_this_turn = True  # Clear context
-
-        elif context_type == "get_song_for_play":  # Get song for play context
-            if query and query != "unintelligible":
-                responses.extend(
-                    play_song_st(query.strip())
-                )  # Play the song
-            else:
-                responses.extend(
-                    generate_assistant_response_audio(
-                        "I didn't get the song name. Please try again.",
-                        force_speak_st=True,
-                    )
-                )
-            st.session_state.last_assistant_question_context = None
-            context_handled_this_turn = True  # Clear context
-
-        elif context_type == "get_text_for_translation":  # Get text for translation context
-            if query and query != "unintelligible":
-                responses.extend(
-                    translate_text_flow(
-                        query.strip(), context["target_lang_name"]
-                    )
-                )  # Translate the text
-            else:
-                responses.extend(
-                    generate_assistant_response_audio(
-                        f"I didn't get what you want to translate to {context['target_lang_name']}. Please try again.",
-                        force_speak_st=True,
-                    )
-                )
-            st.session_state.last_assistant_question_context = None
-            context_handled_this_turn = True  # Clear context
-
-        if context_handled_this_turn:
-            return responses  # If context is handled, return
-
-    play_match = re.search(
-        r"(?:play|listen to|put on|stream)\s+(?:the\s+)?(?:song\s+|music\s+|track\s+)?(.+)",
-        query,
-        re.IGNORECASE,
-    )
-    if play_match:
-        st.session_state.last_assistant_question_context = None
-        song_name = play_match.group(1).strip()
-        if song_name:
-            responses.extend(play_song_st(song_name))
-        else:
-            responses.extend(
-                generate_assistant_response_audio(
-                    "Sure, what song or artist would you like to hear?",
-                    force_speak_st=True,
-                )
-            )
-            st.session_state.last_assistant_question_context = {
-                "type": "get_song_for_play"
-            }
-        return responses
-    elif re.search(
-        r"stop\s*(?:the\s*)?(song|music|playback|playing)|stop current track",
-        query,
-        re.IGNORECASE,
-    ):
-        st.session_state.last_assistant_question_context = None
-        responses.extend(stop_song_st())
-        return responses
-    # Pause, Next, Resume for st.audio are client-side controls, not easily Python-driven.
-    # We can only stop/start a new stream.
-
-    elif (
-        m := re.search(
-            r"(?:weather|forecast)(?:\s+(?:in|for|at|like in)\s+([a-zA-Z\s\-,'.]+))?",
-            query,
-            re.IGNORECASE,
-        )
-    ):
-        st.session_state.last_assistant_question_context = None
-        city = m.group(1).strip() if m.group(1) else None
-        if not city:
-            responses.extend(
-                generate_assistant_response_audio(
-                    "For which city would you like the weather forecast?",
-                    force_speak_st=True,
-                )
-            )
-            st.session_state.last_assistant_question_context = {
-                "type": "get_city_for_weather"
-            }
-        else:
-            responses.extend(get_weather_info(city))
-        return responses
-
-    elif "reminder" in query:
-        st.session_state.last_assistant_question_context = None
-        st.session_state.reminder_flow_step = "action_prompted"
-        st.session_state.reminder_data = {}
-        responses.extend(manage_reminders_flow_st(None))
-        return responses
-    
-    elif "send an email" in query:
-        if st.session_state.get("user_email") and st.session_state.get("user_password"):
-            responses.extend(handle_email_sending_st(query, st.session_state.user_email, st.session_state.user_password))
-            return responses
-        else:
-            st.session_state.email_login_needed = True
-            responses.append(
-                {
-                    "role": "assistant",
-                    "text_content": "Please log in to send emails.",
-                    "audio_path": None
-                })
-            return responses
-
-
-    elif re.search(r"where\s+am\s+i|my\s+location", query, re.IGNORECASE):
-        st.session_state.last_assistant_question_context = None
-        responses.extend(get_location_st())
-        return responses
-    elif re.search(
-        r"system\s+(status|condition|info)|computer health", query, re.IGNORECASE
-    ):
-        st.session_state.last_assistant_question_context = None
-        responses.extend(check_system_condition_server())
-        return responses
-
-    elif (
-        m := re.search(
-            r"translate\s*(?:this|the phrase)?\s*['\"]?(.*?)['\"]?\s+to\s+([a-zA-Z\s\-]+)",
-            query,
-            re.IGNORECASE,
-        )
-    ):
-        st.session_state.last_assistant_question_context = None
-        responses.extend(translate_text_flow(m.group(1).strip(), m.group(2).strip()))
-        return responses
-
-    elif (m := re.search(r"open\s+(.+)", query, re.IGNORECASE)):
-        st.session_state.last_assistant_question_context = None
-        target = m.group(1).strip().lower()
-        social_platforms = {
-            "facebook": 1,
-            "twitter": 1,
-            "youtube": 1,
-            "instagram": 1,
-            "linkedin": 1,
-        }
-        opened_flag = False
-        for s_key in social_platforms:
-            if s_key in target:
-                responses.extend(open_social_media(s_key))
-                opened_flag = True
-                break
-        if not opened_flag:
-            app_to_open = re.sub(
-                r"^(app|program|application)\s+", "", target, flags=re.I
-            ).strip()
-            responses.extend(open_application_server(app_to_open))
-        return responses
-
-    elif (m := re.search(r"close\s+(.+)", query, re.IGNORECASE)):
-        st.session_state.last_assistant_question_context = None
-        responses.extend(close_application_server(m.group(1).strip()))
-        return responses
-
-    elif "increase volume" in query or "volume up" in query:
-        st.session_state.last_assistant_question_context = None
-        responses.extend(change_system_volume_server("up"))
-        return responses
-    elif "decrease volume" in query or "volume down" in query:
-        st.session_state.last_assistant_question_context = None
-        responses.extend(change_system_volume_server("down"))
-        return responses
-    elif "mute" in query and "volume" in query:  # Ensure "volume" to avoid muting mic if assistant is named "Mute"
-        st.session_state.last_assistant_question_context = None
-        responses.extend(change_system_volume_server("mute"))
-        return responses
-    elif "unmute" in query and "volume" in query:
-        st.session_state.last_assistant_question_context = None
-        responses.extend(change_system_volume_server("unmute"))
-        return responses
-
-    elif (
-        m := re.search(r"(?:google|search google for)\s+(.+)", query, re.IGNORECASE
-        )
-    ):
-        st.session_state.last_assistant_question_context = None
-        responses.extend(perform_browsing_server(m.group(1).strip()))
-        return responses
-    elif (
-        m := re.search(
-            r"(?:detailed search for|scrape|extract about)\s+(.+)",
-            query,
-            re.IGNORECASE,
-        )
-    ):
-        st.session_state.last_assistant_question_context = None
-        responses.extend(handle_detailed_web_search(m.group(1).strip()))
-        return responses
-    elif (
-        m := re.search(
-            r"(?:summarize|tell me about|what is|who is)\s+(.+?)(?:\s+on web)?$",
-            query,
-            re.IGNORECASE,
-        )
-    ):
-        st.session_state.last_assistant_question_context = None
-        responses.extend(perform_web_search_and_summarize(m.group(1).strip()))
-        return responses
-    elif "open page" in query or "open website" in query:
-        st.session_state.last_assistant_question_context = None
-        m = re.search(r"open\s+page\s+(.+)", query, re.IGNORECASE)
-        if m:
-            url = m.group(1).strip()
-            if not url.startswith(("http://", "https://")):
-                url = "http://" + url
-            responses.extend(
-                generate_assistant_response_audio(
-                    f"Do you want me to open the page '{url}' on the server?",
-                    force_speak_st=True,
-                )
-            )
-    
-    elif "generate image" in query or "create image" in query:
-        st.session_state.last_assistant_question_context = None
-        m = re.search(r"generate\s+image\s+(.+)", query, re.IGNORECASE)
-        if m:
-            prompt = m.group(1).strip()
-            if prompt:
-                st.session_state.messages.append({"role": "user", "content": f"Generated Image prompt: {prompt}", "source": "text"})
-                with st.spinner(f"Generating image for: {prompt}"):
-                    images = generate_image(prompt, service="stability")  # Online service
-                    if images:
-                        for img in images:
-                            st.session_state.generated_images.append({"image": img, "caption": prompt})
-                    else:
-                        st.error("Image generation failed.")
-            
-                st.session_state.last_assistant_question_context = {
-                    "type": "image_generation",
-                    "prompt": prompt,
-                }
-            else:
-                responses.extend(
-                    generate_assistant_response_audio(
-                        "What should the image be about?",
-                        force_speak_st=True,
-                    )
-                )
-                st.session_state.last_assistant_question_context = {
-                    "type": "get_image_prompt"
-                }
-            return responses
-
-    elif "screenshot" in query or "capture screen" in query:
-        st.session_state.last_assistant_question_context = None
-        try:
-            ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            ss_dir = os.path.join(script_dir, "screenshots_st")
-            os.makedirs(ss_dir, exist_ok=True)
-            fn = os.path.join(ss_dir, f"ss_{ts}.png")
-            pyautogui.screenshot(fn)
-            responses.extend(
-                generate_assistant_response_audio(
-                    f"Screenshot saved on the server in '{ss_dir}'.",
-                    force_speak_st=True,
-                )
-            )
-        except Exception as e:
-            print(f"Screenshot error on server: {e}")
-            responses.extend(
-                generate_assistant_response_audio(
-                    "Error taking screenshot on the server.", force_speak_st=True
-                )
-            )
-        return responses
-
-    elif re.search(r"\b(exit|quit|goodbye|bye|terminate)\b", query, re.IGNORECASE):
-        responses.extend(
-            speak_random_st(["Goodbye!", "See you later!", "Shutting down this session."])
-        )
-        st.session_state.clear()
-        st.session_state.app_terminated = True
-        st.session_state.messages = []  # إعادة التهيئة فورًا بعد المسح
-        return responses
-
-    is_convo_handled, convo_responses = handle_general_conversation_query(query)
+    is_convo_handled, convo_responses = handle_general_conversation_query(processed_query)
     if is_convo_handled:
         responses.extend(convo_responses)
         return responses
+    
+    tag, confidence = predict_intent_from_text(processed_query)
+    print(f"Intent Prediction - Tag: '{tag}', Confidence: {confidence:.3f}'")
+    if tag:
+        if tag == "email_send":
+            # استخراج البريد الإلكتروني من الأمر
+            match = re.search(r"send an email to\s+([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})", query, re.IGNORECASE)
+            if match:
+                recipient_email = match.group(1)
+                # التعامل مع إرسال البريد الإلكتروني هنا
+                responses.extend(handle_email_sending_st(query, st.session_state.user_email, st.session_state.user_password))
+                return responses
+            else:
+                responses.extend(generate_assistant_response_audio("Sorry, I couldn't find the email address.", force_speak_st=True))
+                return responses
+        
+        if st.session_state.get("email_flow_step"): # Email
+            if st.session_state.email_flow_step == "get_recipient":
+                st.session_state.email_recipient = query.strip()
+                responses.extend(
+                    generate_assistant_response_audio(
+                        f"Okay, what should the email say to {st.session_state.email_recipient}?",
+                        force_speak_st=True,
+                    )
+                )
+                st.session_state.email_flow_step = "get_content"
+                return responses
+            elif st.session_state.email_flow_step == "get_content":
+                responses.extend(send_email_st(st.session_state.email_recipient, query.strip(), st.session_state.user_email, st.session_state.user_password))
+                st.session_state.email_flow_step = None  # Email flow over
+                return responses
 
-    # Only ask about web search if a new, non-empty response was generated
-    if responses:  # Check if responses is not empty
-        responses.extend(
-            generate_assistant_response_audio(
-                f"I'm not sure how to handle '{query}'.", force_speak_st=True
-            )
+        
+    
+
+        context_handled_this_turn = False  # Flag for context handling
+        lc_query = query.lower().strip()  # Normalize query
+
+        if st.session_state.get(
+            "reminder_flow_step"
+        ):  # Reminder flow takes priority
+            responses.extend(
+                manage_reminders_flow_st(query)
+            )  # query is the detail user provided
+            return responses  # End processing here, reminder flow handles it
+
+        if st.session_state.get(
+            "last_assistant_question_context"
+        ):  # Handle context-based follow-up questions
+            context = st.session_state.last_assistant_question_context  # Get context
+            context_type = context.get("type")  # Context type
+            positive_responses_list = [
+                "yes",
+                "sure",
+                "okay",
+                "do it",
+                "yeah",
+                "yep",
+                "please",
+                "confirm",
+                "affirmative",
+                "go ahead", 
+                "open",
+            ]  # Positive responses
+            negative_responses_list = [
+                "no",
+                "nope",
+                "don't",
+                "cancel",
+                "negative",
+                "stop",
+                "don't do it",
+            ]  # Negative responses
+
+            if context_type == "web_search_confirm":  # Web search confirmation context
+                if any(
+                    word in lc_query for word in positive_responses_list
+                ):
+                    responses.extend(
+                        generate_assistant_response_audio(
+                            f"Okay, searching the web for '{context['query']}'.",
+                            force_speak_st=True,
+                        )
+                    )  # Generate "searching" message
+                    responses.extend(
+                        perform_web_search_and_summarize(context["query"])
+                    )  # Perform search and summarize
+                elif any(word in lc_query for word in negative_responses_list):
+                    responses.extend(
+                        generate_assistant_response_audio(
+                            "Alright, I won't search.", force_speak_st=True
+                        )
+                    )  # Generate "won't search" message
+                else:  # Unclear response, assume no and clear context
+                    responses.extend(
+                        generate_assistant_response_audio(
+                            f"I'm not sure what to do about searching '{context['query']}'. I'll skip it for now.",
+                            force_speak_st=True,
+                        )
+                    )
+                st.session_state.last_assistant_question_context = None
+                context_handled_this_turn = True  # Clear context
+
+            elif context_type == "open_page_confirm":  # Open page confirmation context
+                if any(
+                    word in lc_query for word in positive_responses_list
+                ):
+                    responses.extend(
+                        speak_random_st(
+                            ["Opening the page on the server.", "Alright, opening it on the server."],
+                            force_speak_st=True,
+                        )
+                    )  # Generate "opening" message
+                    try:
+                        webbrowser.open(context["url"])  # Opens on server
+                    except Exception as e:
+                        print(f"Error opening browser on server: {e}")
+                elif any(word in lc_query for word in negative_responses_list):
+                    responses.extend(
+                        generate_assistant_response_audio(
+                            "Okay, I won't open it.", force_speak_st=True
+                        )
+                    )  # Generate "won't open" message
+                else:
+                    responses.extend(
+                        generate_assistant_response_audio(
+                            "I'll assume you don't want to open the page for now.",
+                            force_speak_st=True,
+                        )
+                    )
+                st.session_state.last_assistant_question_context = None
+                context_handled_this_turn = True  # Clear context
+
+            elif context_type == "say_translation_confirm":  # Say translation confirmation context
+                if any(
+                    word in lc_query for word in positive_responses_list + ["say it"]
+                ):
+                    responses.extend(
+                        generate_assistant_response_audio(
+                            context["text"],
+                            lang_code=context["lang_code"],
+                            force_speak_st=True,
+                        )
+                    )  # Generate audio in translated language
+                st.session_state.last_assistant_question_context = None
+                context_handled_this_turn = True  # Clear context
+
+            elif context_type == "get_city_for_weather":  # Get city for weather context
+                if query and query != "unintelligible":
+                    responses.extend(
+                        get_weather_info(query.strip())
+                    )  # Get weather info
+                else:
+                    responses.extend(
+                        generate_assistant_response_audio(
+                            "I didn't get the city for the weather. Please try again.",
+                            force_speak_st=True,
+                        )
+                    )
+                st.session_state.last_assistant_question_context = None
+                context_handled_this_turn = True  # Clear context
+
+            elif context_type == "get_song_for_play":  # Get song for play context
+                if query and query != "unintelligible":
+                    responses.extend(
+                        play_song_st(query.strip())
+                    )  # Play the song
+                else:
+                    responses.extend(
+                        generate_assistant_response_audio(
+                            "I didn't get the song name. Please try again.",
+                            force_speak_st=True,
+                        )
+                    )
+                st.session_state.last_assistant_question_context = None
+                context_handled_this_turn = True  # Clear context
+
+            elif context_type == "get_text_for_translation":  # Get text for translation context
+                if query and query != "unintelligible":
+                    responses.extend(
+                        translate_text_flow(
+                            query.strip(), context["target_lang_name"]
+                        )
+                    )  # Translate the text
+                else:
+                    responses.extend(
+                        generate_assistant_response_audio(
+                            f"I didn't get what you want to translate to {context['target_lang_name']}. Please try again.",
+                            force_speak_st=True,
+                        )
+                    )
+                st.session_state.last_assistant_question_context = None
+                context_handled_this_turn = True  # Clear context
+
+            if context_handled_this_turn:
+                return responses  # If context is handled, return
+
+        play_match = re.search(
+            r"(?:play|listen to|put on|stream)\s+(?:the\s+)?(?:song\s+|music\s+|track\s+)?(.+)",
+            query,
+            re.IGNORECASE,
         )
-        responses.extend(
-            generate_assistant_response_audio(
-                "Shall I search the web for it?", force_speak_st=True
+        if play_match:
+            st.session_state.last_assistant_question_context = None
+            song_name = play_match.group(1).strip()
+            if song_name:
+                responses.extend(play_song_st(song_name))
+            else:
+                responses.extend(
+                    generate_assistant_response_audio(
+                        "Sure, what song or artist would you like to hear?",
+                        force_speak_st=True,
+                    )
+                )
+                st.session_state.last_assistant_question_context = {
+                    "type": "get_song_for_play"
+                }
+            return responses
+        elif re.search(
+            r"stop\s*(?:the\s*)?(song|music|playback|playing)|stop current track",
+            query,
+            re.IGNORECASE,
+        ):
+            st.session_state.last_assistant_question_context = None
+            responses.extend(stop_song_st())
+            return responses
+        # Pause, Next, Resume for st.audio are client-side controls, not easily Python-driven.
+        # We can only stop/start a new stream.
+
+        elif (
+            m := re.search(
+                r"(?:weather|forecast)(?:\s+(?:in|for|at|like in)\s+([a-zA-Z\s\-,'.]+))?",
+                query,
+                re.IGNORECASE,
             )
-        )
-        st.session_state.last_assistant_question_context = {
-            "type": "web_search_confirm",
-            "query": query,
-        }
-    else:
-        print(f"[Unknown Suppressed for ST] '{query}'. Music playing.")
-        responses.append(
-            {
-                "role": "assistant",
-                "text_content": f"(Didn't understand '{query}', and music is playing.)",
-                "audio_path": None,
+        ):
+            st.session_state.last_assistant_question_context = None
+            city = m.group(1).strip() if m.group(1) else None
+            if not city:
+                responses.extend(
+                    generate_assistant_response_audio(
+                        "For which city would you like the weather forecast?",
+                        force_speak_st=True,
+                    )
+                )
+                st.session_state.last_assistant_question_context = {
+                    "type": "get_city_for_weather"
+                }
+            else:
+                responses.extend(get_weather_info(city))
+            return responses
+
+        elif "reminder" in query:
+            st.session_state.last_assistant_question_context = None
+            st.session_state.reminder_flow_step = "action_prompted"
+            st.session_state.reminder_data = {}
+            responses.extend(manage_reminders_flow_st(None))
+            return responses
+        
+        elif (
+                m := re.search(
+                    r"(?:send|email|mail)\s*(?:an)?\s*(?:email|mail)?\s*(?:to)?\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?",
+                    query,
+                    re.IGNORECASE,
+                )
+            ):
+            if st.session_state.get("user_email") and st.session_state.get("user_password"):
+                responses.extend(handle_email_sending_st(query, st.session_state.user_email, st.session_state.user_password))
+                return responses
+            else:
+                st.session_state.email_login_needed = True
+                responses.append(
+                    {
+                        "role": "assistant",
+                        "text_content": "Please log in to send emails.",
+                        "audio_path": None
+                    })
+                return responses
+
+
+        elif re.search(r"where\s+am\s+i|my\s+location", query, re.IGNORECASE):
+            st.session_state.last_assistant_question_context = None
+            responses.extend(get_location_st())
+            return responses
+        elif re.search(
+            r"system\s+(status|condition|info)|computer health", query, re.IGNORECASE
+        ):
+            st.session_state.last_assistant_question_context = None
+            responses.extend(check_system_condition_server())
+            return responses
+
+        elif (
+            m := re.search(
+                r"translate\s*(?:this|the phrase)?\s*['\"]?(.*?)['\"]?\s+to\s+([a-zA-Z\s\-]+)",
+                query,
+                re.IGNORECASE,
+            )
+        ):
+            st.session_state.last_assistant_question_context = None
+            responses.extend(translate_text_flow(m.group(1).strip(), m.group(2).strip()))
+            return responses
+
+        elif (m := re.search(r"open\s+(.+)", query, re.IGNORECASE)):
+            st.session_state.last_assistant_question_context = None
+            target = m.group(1).strip().lower()
+            social_platforms = {
+                "facebook": 1,
+                "twitter": 1,
+                "youtube": 1,
+                "instagram": 1,
+                "linkedin": 1,
             }
-        )
+            opened_flag = False
+            for s_key in social_platforms:
+                if s_key in target:
+                    responses.extend(open_social_media(s_key))
+                    opened_flag = True
+                    break
+            if not opened_flag:
+                app_to_open = re.sub(
+                    r"^(app|program|application)\s+", "", target, flags=re.I
+                ).strip()
+                responses.extend(open_application_server(app_to_open))
+            return responses
 
+        elif (m := re.search(r"close\s+(.+)", query, re.IGNORECASE)):
+            st.session_state.last_assistant_question_context = None
+            responses.extend(close_application_server(m.group(1).strip()))
+            return responses
+
+        elif "increase volume" in query or "volume up" in query or "Volume up" in query or "louder" in query or "make it louder" in query or "turn up the volume" in query or "Increase volume" in query:
+            st.session_state.last_assistant_question_context = None
+            responses.extend(change_system_volume_server("up"))
+            return responses
+        elif "decrease volume" in query or "volume down" in query or "quieter" in query or "make it quieter" in query or "turn down the volume" in query or "Lower volume" in query or "reduce volume" in query:
+            st.session_state.last_assistant_question_context = None
+            responses.extend(change_system_volume_server("down"))
+            return responses
+        elif "mute" in query and "volume" in query or "Mute" in query and "volume" in query :  # Ensure "volume" to avoid muting mic if assistant is named "Mute"
+            st.session_state.last_assistant_question_context = None
+            responses.extend(change_system_volume_server("mute"))
+            return responses
+        elif "unmute" in query and "volume" in query or "Unmute" in query and "volume" in query:  # Ensure "volume" to avoid unmuting mic if assistant is named "Mute"
+            st.session_state.last_assistant_question_context = None
+            responses.extend(change_system_volume_server("unmute"))
+            return responses
+
+        elif (
+            m := re.search(r"(?:google|search google for)\s+(.+)", query, re.IGNORECASE
+            )
+        ):
+            st.session_state.last_assistant_question_context = None
+            responses.extend(perform_browsing_server(m.group(1).strip()))
+            return responses
+        elif (
+            m := re.search(
+                r"(?:detailed search for|scrape|extract about |what is|who is)\s+(.+)",
+                query,
+                re.IGNORECASE,
+            )
+        ):
+            st.session_state.last_assistant_question_context = None
+            responses.extend(handle_detailed_web_search(m.group(1).strip()))
+            return responses
+        elif (
+            m := re.search(
+                r"(?:summarize|tell me about  )\s+(.+?)(?:\s+on web)?$",
+                query,
+                re.IGNORECASE,
+            )
+        ):
+            st.session_state.last_assistant_question_context = None
+            responses.extend(perform_web_search_and_summarize(m.group(1).strip()))
+            return responses
+        
+        elif "open page" in query or "open website" in query:
+            st.session_state.last_assistant_question_context = None
+            m = re.search(r"open\s+page\s+(.+)", query, re.IGNORECASE)
+            if m:
+                url = m.group(1).strip()
+                if not url.startswith(("http://", "https://")):
+                    url = "http://" + url
+                responses.extend(
+                    generate_assistant_response_audio(
+                        f"Do you want me to open the page '{url}' on the server?",
+                        force_speak_st=True,
+                    )
+                )
+        
+        elif "generate image" in query or "create image" in query or "make image" in query or "draw image" in query or "generate picture" in query or "create picture" in query or "make picture" in query or "draw picture" in query or "generate art" in query or "create art" in query or "make art" in query or "draw art" in query:
+            st.session_state.last_assistant_question_context = None
+            m = re.search(r"generate\s+image\s+(.+)", query, re.IGNORECASE)
+            if m:
+                prompt = m.group(1).strip()
+                if prompt:
+                    st.session_state.messages.append({"role": "user", "content": f"Generated Image prompt: {prompt}", "source": "text"})
+                    with st.spinner(f"Generating image for: {prompt}"):
+                        images = generate_image(prompt, service="stability")  # Online service
+                        if images:
+                            for img in images:
+                                st.session_state.generated_images.append({"image": img, "caption": prompt})
+                        else:
+                            st.error("Image generation failed.")
+                
+                    st.session_state.last_assistant_question_context = {
+                        "type": "image_generation",
+                        "prompt": prompt,
+                    }
+                else:
+                    responses.extend(
+                        generate_assistant_response_audio(
+                            "What should the image be about?",
+                            force_speak_st=True,
+                        )
+                    )
+                    st.session_state.last_assistant_question_context = {
+                        "type": "get_image_prompt"
+                    }
+                return responses
+
+        elif "screenshot" in query or "capture screen" in query or "take screenshot" in query or "capture screenshot" in query :
+            st.session_state.last_assistant_question_context = None
+            try:
+                ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                ss_dir = os.path.join(script_dir, "screenshots_st")
+                os.makedirs(ss_dir, exist_ok=True)
+                fn = os.path.join(ss_dir, f"ss_{ts}.png")
+                pyautogui.screenshot(fn)
+                responses.extend(
+                    generate_assistant_response_audio(
+                        f"Screenshot saved on the server in '{ss_dir}'.",
+                        force_speak_st=True,
+                    )
+                )
+            except Exception as e:
+                print(f"Screenshot error on server: {e}")
+                responses.extend(
+                    generate_assistant_response_audio(
+                        "Error taking screenshot on the server.", force_speak_st=True
+                    )
+                )
+            return responses
+
+        elif re.search(r"\b(exit|quit|goodbye|bye|terminate)\b", query, re.IGNORECASE):
+            responses.extend(
+                speak_random_st(["Goodbye!", "See you later!", "Shutting down this session."])
+            )
+            st.session_state.clear()
+            st.session_state.app_terminated = True
+            st.session_state.messages = []  # إعادة التهيئة فورًا بعد المسح
+            return responses
+
+        is_convo_handled, convo_responses = handle_general_conversation_query(query)
+        if is_convo_handled:
+            responses.extend(convo_responses)
+            return responses
+
+        # Only ask about web search if a new, non-empty response was generated
+        if responses:  # Check if responses is not empty
+            responses.extend(
+                generate_assistant_response_audio(
+                    f"I'm not sure how to handle '{query}'.", force_speak_st=True
+                )
+            )
+            responses.extend(
+                generate_assistant_response_audio(
+                    "Shall I search the web for it?", force_speak_st=True
+                )
+            )
+            st.session_state.last_assistant_question_context = {
+                "type": "web_search_confirm",
+                "query": query,
+            }
+        else:
+            print(f"[Unknown Suppressed for ST] '{query}'. Music playing.")
+            responses.append(
+                {
+                    "role": "assistant",
+                    "text_content": f"(Didn't understand '{query}', and music is playing.)",
+                    "audio_path": None,
+                }
+            )
+    else:
+        print("No intent detected.")
+        responses.extend(
+            generate_assistant_response_audio(
+                "I'm sorry, I didn't understand. Can you please rephrase?", force_speak_st=True
+            )
+        )
     return responses
 
 
@@ -2572,7 +2683,7 @@ def get_nearest_reminder():
     return nearest_reminder
 
 # --- Online Image Generation ---
-import requests
+
 from io import BytesIO
 from PIL import Image
 import base64  # Added import
