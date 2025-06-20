@@ -1,4 +1,3 @@
-
 # self_attention.py
 
 import tensorflow as tf
@@ -11,7 +10,6 @@ class SelfAttention(tf.keras.layers.Layer):
         self.units = units
 
     def build(self, input_shape):
-        # مثلاً نضع الأوزان هنا
         self.kernel = self.add_weight(
             shape=(input_shape[-1], self.units),
             initializer="glorot_uniform",
@@ -21,14 +19,12 @@ class SelfAttention(tf.keras.layers.Layer):
         super().build(input_shape)
 
     def call(self, inputs):
-        # هنا حط اللوجيك بتاع الـ attention
-        # مثال بسيط:
         attention_scores = tf.matmul(inputs, self.kernel)
         attention_weights = tf.nn.softmax(attention_scores, axis=1)
         output = tf.matmul(attention_weights, inputs)
         return output
 
     def get_config(self):
-        config = super(SelfAttention, self).get_config()
+        config = super().get_config()
         config.update({"units": self.units})
         return config
