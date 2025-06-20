@@ -16,7 +16,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from keras.layers import MultiHeadAttention as SelfAttention
 from self_attention import SelfAttention
-from tensorflow.keras.models import load_model
+
 
 # Load your model with custom object
 model = load_model("enhanced_chatbot_model.h5", custom_objects={"SelfAttention": SelfAttention})
