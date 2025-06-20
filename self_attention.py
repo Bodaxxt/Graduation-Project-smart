@@ -5,7 +5,9 @@ class SelfAttention(Layer):
     def __init__(self, num_heads=1, **kwargs):
         super(SelfAttention, self).__init__(**kwargs)
         self.num_heads = num_heads
-        self.kernel = None  # Initialize kernel to None
+        # Absorbing units arg:
+        self.units = kwargs.pop('units', None) # gets 'units' if it is present. deletes it from kwargs.
+        self.kernel = None
 
     def build(self, input_shape): # BUILD method to create weights properly
         self.kernel = self.add_weight(
