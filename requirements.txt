@@ -4,6 +4,7 @@ gTTS==2.3.2
 google-trans-new==1.1.9
 googletrans==4.0.0-rc1
 googlesearch-python==1.2.3
+google-trans-new
 numpy>=2.0.0
 openai
 Pillow>=10.2.0
