@@ -15,6 +15,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from keras.layers import MultiHeadAttention as SelfAttention
+from self_attention import SelfAttention
 import random
 import numpy as np
 import psutil
