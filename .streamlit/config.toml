@@ -2,5 +2,6 @@
 headless = true
 port = 8501
 enableCORS = false
+watchdog = false 
 [install]
 pythonVersion = "3.12.3"
