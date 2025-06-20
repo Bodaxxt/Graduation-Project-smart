@@ -19,6 +19,7 @@ import pickle
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from keras.layers import MultiHeadAttention as SelfAttention
 import random
 import numpy as np
 import psutil
@@ -3147,7 +3148,7 @@ class SelfAttention(tf.keras.layers.Layer):  # Ensure you inherit from tf.keras.
 def load_ai_model_and_data():
     """Loads the AI model, tokenizer, label encoder, and intent data."""
     intents_path_local = os.path.join(script_dir, "intents[1].json")
-    model_path_local = os.path.join(script_dir, "enhanced_chatbot_model.keras")
+    model_path_local = tf.keras.models.load_model("enhanced_chatbot_model.keras", compile=False)
     tokenizer_path_local = os.path.join(script_dir, "enhanced_tokenizer.pkl")
     label_encoder_path_local = os.path.join(script_dir, "enhanced_label_encoder.pkl")
 
