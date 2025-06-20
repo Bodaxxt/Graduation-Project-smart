@@ -6,6 +6,7 @@ googlesearch-python==1.2.3
 numpy>=2.0.0
 openai
 Pillow>=10.2.0
+pyspellchecker
 psutil>=5.9.5
 pydub>=0.25.1
 pyautogui>=0.9.53
