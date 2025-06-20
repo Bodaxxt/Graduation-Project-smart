@@ -11,6 +11,7 @@ pydub>=0.25.1
 pyautogui>=0.9.53
 pyttsx3==2.90
 python-vlc
+playsound==1.2.2
 requests==2.31.0
 SpeechRecognition>=3.10.0
 streamlit>=1.29.0
