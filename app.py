@@ -52,7 +52,6 @@ import tempfile
 from deep_translator import GoogleTranslator
 import sqlite3
 import re
-# from audiorecorder import audiorecorder
 from pydub import AudioSegment
 
 # Set correct paths for ffmpeg and ffprobe
