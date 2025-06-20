@@ -19,7 +19,7 @@ from self_attention import SelfAttention
 
 
 # Load your model with custom object
-model = load_model("enhanced_chatbot_model.h5", custom_objects={"SelfAttention": SelfAttention})
+model = load_model("enhanced_chatbot_model.keras", custom_objects={"SelfAttention": SelfAttention})
 
 import random
 import numpy as np
