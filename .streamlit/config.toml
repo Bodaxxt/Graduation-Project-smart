@@ -3,5 +3,8 @@ headless = true
 port = 8501
 enableCORS = false
 watchdog = false 
+[browser]
+serverAddress = "localhost"
+gatherUsageStats = false
 [install]
 pythonVersion = "3.12.3"
