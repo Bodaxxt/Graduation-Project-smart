@@ -8,17 +8,13 @@ import os
 from tempfile import NamedTemporaryFile
 import datetime
 import webbrowser
+import pyautogui
 import speech_recognition as sr
 import json
 import pickle
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from keras.layers import MultiHeadAttention as SelfAttention
-from self_attention import SelfAttention
-
-
-
 import random
 import numpy as np
 import psutil
@@ -29,6 +25,7 @@ import requests
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from audiorecorder import audiorecorder
 from tempfile import NamedTemporaryFile
 import tensorflow as tf
 
@@ -52,6 +49,7 @@ import tempfile
 from deep_translator import GoogleTranslator
 import sqlite3
 import re
+from audiorecorder import audiorecorder
 from pydub import AudioSegment
 
 # Set correct paths for ffmpeg and ffprobe
@@ -2912,6 +2910,7 @@ def run_streamlit_app_ui1():
             
             # Reset flag, so it can be processed on next recording
             st.session_state.voice_input_processed = False  
+            
         # -- Stop speech input part --
         st.markdown("---")
         if st.session_state.get("is_music_playing_st") and st.session_state.get(
@@ -3147,7 +3146,7 @@ class SelfAttention(tf.keras.layers.Layer):  # Ensure you inherit from tf.keras.
 def load_ai_model_and_data():
     """Loads the AI model, tokenizer, label encoder, and intent data."""
     intents_path_local = os.path.join(script_dir, "intents[1].json")
-    model_path_local = tf.keras.models.load_model("enhanced_chatbot_model.keras", compile=False)
+    model_path_local = os.path.join(script_dir, "enhanced_chatbot_model.keras")
     tokenizer_path_local = os.path.join(script_dir, "enhanced_tokenizer.pkl")
     label_encoder_path_local = os.path.join(script_dir, "enhanced_label_encoder.pkl")
 
